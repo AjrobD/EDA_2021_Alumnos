@@ -109,6 +109,18 @@ public class LinkedTree<E> implements NAryTree<E> {
         public void setMyTree(LinkedTree<T> myTree) {
             this.myTree = myTree;
         }
+
+        public boolean isAncestor(TreeNode<T> nChild){
+            TreeNode<T> nAux = nChild;
+            while(nAux.parent != null){
+                if(nAux.parent==this){
+                    return true;
+                }
+                nAux = nAux.parent;
+            }
+            return false;
+        }
+
     }
 
     private TreeNode<E> root; // The root of the tree
@@ -255,9 +267,31 @@ public class LinkedTree<E> implements NAryTree<E> {
 
     @Override
     public void moveSubtree(Position<E> pOrig, Position<E> pDest) throws RuntimeException {
-        //TODO: Practica 2 Ejercicio 1
-
+        TreeNode<E> nOrig = checkPosition(pOrig);
+        TreeNode<E> nDest = checkPosition(pDest);
+        if(nOrig == root){
+            throw new RuntimeException("Root node can't be moved");
+        }
+        else if(nOrig == nDest){
+            throw new RuntimeException("Both positions are the same");
+        }
+        else if(nOrig.isAncestor(nDest)){
+            throw new RuntimeException("Target position can't be a sub tree of origin");
+        }
+        nOrig.getParent().getChildren().remove(nOrig);
+        nOrig.setParent(nDest);
+        nDest.getChildren().add(nOrig);
     }
+
+    public void moveSubtree2(Position<E> pOrig, Position<E> pDest) {
+        TreeNode<E> nOrig = checkPosition(pOrig);
+        TreeNode<E> nDest = checkPosition(pDest);
+        nOrig.getParent().getChildren().remove(nOrig);
+        nOrig.setParent(nDest);
+        nDest.getChildren().add(nOrig);
+    }
+
+
 
 }
 

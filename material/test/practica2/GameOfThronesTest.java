@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import usecase.practica2.GameOfThrones;
 
+import java.io.FileNotFoundException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameOfThronesTest {
@@ -13,13 +15,28 @@ class GameOfThronesTest {
     @BeforeEach
     void setUp() {
         got = new GameOfThrones();
-        got.loadFile(path);
+        path = "C:/Users/Usuario/Desktop/URJC/Primer Cuatrimestre/EDA/Practicas/Practica2/GOT_Families.txt";
+        try {
+            got.loadFile(path);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
+    @Test
+    void testLoad(){
+        got = new GameOfThrones();
+        path = "C:/Users/Usuario/Desktop/URJC/Primer Cuatrimestre/EDA/Practicas/Practica2/GOT_Families.txt";
+        try {
+            got.loadFile(path);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     void testFindHeir() {
-        String expected = "Eddad Stark";
+        String expected = "Eddard Stark";
         String output = got.findHeir("Stark");
         assertEquals(expected, output);
     }
@@ -33,7 +50,7 @@ class GameOfThronesTest {
     @Test
     void testAreFamily() {
         assertTrue(got.areFamily("Arya Stark", "Rob Stark"));
-        assertFalse(got.areFamily("Catelyn Tully", "Aerys Targarien"));
+        assertFalse(got.areFamily("Catelyn Tully", "Aerys Targaryen"));
     }
 
 }

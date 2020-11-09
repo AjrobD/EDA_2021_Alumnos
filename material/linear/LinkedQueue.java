@@ -1,9 +1,8 @@
 package material.linear;
 
 import material.Position;
-import sun.awt.image.ImageWatched;
 
-public class LinkedQueue<E> {
+public class LinkedQueue<E> implements Queue<E>{
     private class DNode<E> implements Position<E> {
 
         private DNode<E>  next;
@@ -64,7 +63,7 @@ public class LinkedQueue<E> {
         size++;
     }
 
-    public DNode<E> dequeue() throws RuntimeException{
+    public E dequeue() throws RuntimeException{
         if(isEmpty()){
             throw new RuntimeException("This queue is empty");
         }
@@ -72,7 +71,7 @@ public class LinkedQueue<E> {
         nodo.setNext(null);
         head = head.getNext();
         size--;
-        return nodo;
+        return nodo.getElement();
     }
 
 }

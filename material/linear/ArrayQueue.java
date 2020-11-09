@@ -2,19 +2,31 @@ package material.linear;
 
 import material.Position;
 
-public class ArrayQueue<E>{
+public class ArrayQueue<E> implements Queue<E>{
 
     private class Node<E> implements Position<E> {
         private E element;
+
+        public Node(E e){
+            element = e;
+        }
+
         public E getElement() {
             return element;
         }
     }
 
-    private Node<E>[] queue;
+    private Node<E> queue[];
     private int top;
     private int n;
     private int MAX_SIZE;
+
+    public ArrayQueue(){
+        MAX_SIZE = 5;
+        top = 0;
+        n=0;
+        queue = (Node<E>[]) new Node[5];
+    }
 
     public ArrayQueue(int size){
         MAX_SIZE = size;
@@ -33,13 +45,13 @@ public class ArrayQueue<E>{
 
     public E front() throws RuntimeException{
         if (isEmpty()){
-            throw new RuntimeException("This queue is empty");
+            throw new RuntimeException("Queue is empty");
         }
         return queue[top].getElement();
     }
 
     public void enqueue(E element) {
-        Node<E> nodo = (Node<E>) element;
+        Node<E> nodo =  new Node<E>(element);
         if(n<MAX_SIZE){
             queue[(top+n)%MAX_SIZE] = nodo;
         }
@@ -51,14 +63,14 @@ public class ArrayQueue<E>{
             queue2[MAX_SIZE] = nodo;
             queue = queue2;
             top = 0;
-            n++;
             MAX_SIZE=MAX_SIZE*2;
         }
+        n++;
     }
 
     public E dequeue() throws RuntimeException{
         if (isEmpty()){
-            throw new RuntimeException("This queue is empty");
+            throw new RuntimeException("Queue is empty");
         }
         E elemento = queue[top].getElement();
         top=(top+1)%MAX_SIZE;

@@ -53,9 +53,9 @@ class QueueTest {
     @org.junit.jupiter.api.Test
     void testDequeue() {
         int actual = 0;
-        while(!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             int element = queue.dequeue();
-            assertEquals(element,actual);
+            assertEquals(element, actual);
             actual++;
         }
         assertTrue(queue.isEmpty());
@@ -63,7 +63,6 @@ class QueueTest {
         assertEquals("Queue is empty", runtimeException.getMessage());
 
     }
-
     @org.junit.jupiter.api.Test
     void testResize() {
         //assumeTrue reports if the condition is not met and the test is stopped, a stacktrace is reported,
