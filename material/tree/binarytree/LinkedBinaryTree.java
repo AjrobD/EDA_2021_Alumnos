@@ -16,7 +16,7 @@ import java.util.List;
 public class LinkedBinaryTree<E> implements BinaryTree<E> {
 
 
-    protected class BTNode<T> implements Position<T> {
+    protected class BTNode<T> implements Position<T>{
 
         private T element;
         private BTNode<T> left, right, parent;
@@ -440,7 +440,7 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
     }
 
     @Override
-    public boolean isComplete() 
+    public boolean isComplete(){
         for (Position<E> next : this) {
             if (this.isInternal(next) && (!this.hasLeft(next) || !this.hasRight(next)))
                 return false;
