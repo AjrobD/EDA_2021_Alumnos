@@ -1,6 +1,7 @@
 package material.test.practica1;
 
 import material.linear.ArrayQueue;
+import material.linear.LinkedQueue;
 import material.linear.Queue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -13,7 +14,7 @@ class QueueTest {
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
-        queue = new ArrayQueue<>();
+        queue = new LinkedQueue<>();
 //        queue = new LinkedQueue<>();
         for (int i = 0; i < MAX; i++) {
             queue.enqueue(i);
@@ -67,7 +68,7 @@ class QueueTest {
     void testResize() {
         //assumeTrue reports if the condition is not met and the test is stopped, a stacktrace is reported,
         //and the test marked as ignored.
-        Assumptions.assumeTrue(queue instanceof ArrayQueue, "Not an instance of ArrayQueue");
+        Assumptions.assumeTrue(queue instanceof LinkedQueue, "Not an instance of ArrayQueue");
 
         //assumingThat if a test tha only executes in certain conditions
         //if the condition is not met the test will pass.

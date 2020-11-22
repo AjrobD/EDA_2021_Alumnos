@@ -45,7 +45,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     @Override
     public Position<E> left(Position<E> p) throws RuntimeException {
         ABTPos<E> pos = checkPosition(p);
-        if(2*pos.getPos()>=tree.length){
+        if(2*pos.getPos()>=tree.length||tree[2*pos.getPos()]==null){
             throw new RuntimeException("No left child");
         }
         return tree[2*pos.getPos()];
@@ -54,7 +54,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     @Override
     public Position<E> right(Position<E> p) throws RuntimeException {
         ABTPos<E> pos = checkPosition(p);
-        if(2*pos.getPos()+1>=tree.length){
+        if(2*pos.getPos()+1>=tree.length||tree[2*pos.getPos()+1]==null){
             throw new RuntimeException("No right child");
         }
         return tree[2*pos.getPos()+1];
@@ -149,14 +149,28 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
         ABTPos<E> node = checkPosition(p);
         int pos = node.getPos();
         E elem = node.getElement();
-        if(pos*2+1<tree.length && tree[pos*2]!=null && tree[pos*2+1]!=null){
+        if(pos*2+1<tree.length && pos*2<tree.length && tree[pos*2]!=null && tree[pos*2+1]!=null){
             throw new RuntimeException("Cannot remove node with two children");
         }
-        ABTPos<E> child = tree[pos*2]!=null ? tree[pos*2] : tree[pos*2+1];
-        if(pos==1){
-
+        if(pos==1&&size()==1){
+            tree[pos]=null;
+            return elem;
         }
-        tree[pos] = null;
+        if(hasLeft(p)){
+            if(pos%2==0)
+                relocate(pos,pos/2,left(p));
+            else
+                relocate(pos,(pos-1)/2,left(p));
+        }
+        else if(hasRight(p)){
+            if(pos%2==0)
+                relocate(pos,pos/2,right(p));
+            else
+                relocate(pos,(pos-1)/2,right(p));
+        }
+        else{
+            tree[pos]=null;
+        }
         return elem;
     }
 
@@ -278,7 +292,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     @Override
     public boolean isComplete() {
         for (Position<E> next : tree) {
-            if (this.isInternal(next) && (!this.hasLeft(next) || !this.hasRight(next)))
+            if (next!=null && this.isInternal(next) && (!this.hasLeft(next) || !this.hasRight(next)))
                 return false;
         }
         return true;
@@ -382,5 +396,32 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
             throw new RuntimeException("The position is invalid");
         }
         return (ABTPos<E>) p;
+    }
+
+    private void relocate(int father, int newFather, Position<E> son){
+        ABTPos<E> node = (ABTPos<E>) son;
+        int pos;
+        if(father%2==0){
+            pos=newFather*2;
+        }
+        else{
+            pos=newFather*2+1;
+        }
+        int oldPos = node.getPos();
+        tree[oldPos]=null;
+        tree[pos]=node;
+        node.setPos(pos);
+        if(node.getPos()*2< tree.length&&tree[node.getPos()*2]!=null){
+            if(pos%2==0)
+                relocate(pos,pos/2,tree[node.getPos()*2]);
+            else
+                relocate(pos,(pos-1)/2,tree[node.getPos()*2]);
+        }
+        if(node.getPos()*2+1< tree.length&&tree[node.getPos()*2+1]!=null){
+            if(pos%2==0)
+                relocate(pos,pos/2,tree[node.getPos()*2+1]);
+            else
+                relocate(pos,(pos-1)/2,tree[node.getPos()*2+1]);
+        }
     }
 }

@@ -16,7 +16,7 @@ public class ArrayQueue<E> implements Queue<E>{
         }
     }
 
-    private Node<E> queue[];
+    private Node<E>[] queue;
     private int top;
     private int n;
     private int MAX_SIZE;

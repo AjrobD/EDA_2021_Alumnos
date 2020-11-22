@@ -58,18 +58,23 @@ public class LinkedQueue<E> implements Queue<E>{
 
     public void enqueue(E element){
         DNode<E> nodo = new DNode<E>(null,element);
-        tail.setNext(nodo);
-        tail = nodo;
+        if(tail==null){
+            tail=nodo;
+            head=nodo;
+        }else{
+            tail.setNext(nodo);
+            tail = nodo;
+        }
         size++;
     }
 
     public E dequeue() throws RuntimeException{
         if(isEmpty()){
-            throw new RuntimeException("This queue is empty");
+            throw new RuntimeException("Queue is empty");
         }
         DNode<E> nodo = head;
-        nodo.setNext(null);
         head = head.getNext();
+        nodo.setNext(null);
         size--;
         return nodo.getElement();
     }
