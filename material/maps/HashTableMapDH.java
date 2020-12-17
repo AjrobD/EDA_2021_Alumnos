@@ -20,6 +20,10 @@ public class HashTableMapDH<K, V> extends AbstractHashTableMap<K, V> {
 
     @Override
     protected int offset(K key, int i) {
-        throw new RuntimeException("Not yet implemented");
+        int q = 7;
+        while(q>capacity&&q>1){
+            q=q-2;
+        }
+        return (q-(hashValue(key)%q))*i;
     }
 }

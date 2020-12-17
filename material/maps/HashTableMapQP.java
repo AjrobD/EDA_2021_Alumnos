@@ -1,4 +1,5 @@
 package material.maps;
+
 /**
  * @param <K> The hey
  * @param <V> The stored value
@@ -19,7 +20,13 @@ public class HashTableMapQP<K, V> extends AbstractHashTableMap<K, V> {
 
     @Override
     protected int offset(K key, int i) {
-        throw new RuntimeException("Not yet implemented");
+        int c1 = 2;
+        int c2 = 3;
+        return c1*i+c2*i^2;
+        /*Random ran = new Random();
+        int c1 = ran.nextInt(5);
+        int c2 = ran.nextInt(4)+1;*/
+
     }
 
 }

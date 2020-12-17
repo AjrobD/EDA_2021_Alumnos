@@ -1,12 +1,16 @@
 package material.test.practica4;
 
 
-import usecase.practica4.*;
+import usecase.practica4.PearRegister;
+import usecase.practica4.PearStore;
+import usecase.practica4.Product;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 class PearRegisterTest {
     private static PearRegister register;
@@ -14,8 +18,12 @@ class PearRegisterTest {
     @org.junit.jupiter.api.BeforeAll
     static void loadFile() {
         register = new PearRegister();
-        String path = "src/PearSalesFile.txt";
-        register.loadFile(path);
+        String path = "C:/Users/Usuario/Desktop/URJC/Primer Cuatrimestre/EDA/Practicas/Practica4/PearSalesFiles.txt";
+        try {
+            register.loadFile(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -32,7 +40,7 @@ class PearRegisterTest {
     @org.junit.jupiter.api.Test
     void getScoreOfProduct() {
         Product producto = new Product("MakBukPro", 2019);
-        assertEquals(4.1, Math.round(register.getScoreOfProduct(producto) * 10) / 10.0);
+        assertEquals(4.1, Math.round(register.getScoreOfProduct(producto) * 10) / 10.0,0.001);
     }
 
     @org.junit.jupiter.api.Test
