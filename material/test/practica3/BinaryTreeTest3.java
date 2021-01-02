@@ -1,21 +1,22 @@
 package material.test.practica3;
 
 import material.Position;
+import material.tree.binarytree.ArrayBinaryTree;
 import material.tree.binarytree.BinaryTree;
-import material.tree.binarytree.LinkedBinaryTree;
+import material.tree.binarytree.ArrayBinaryTree;
 
 import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LinkedBinaryTreeTest {
+class BinaryTreeTest3 {
 
-    private LinkedBinaryTree<Character> tree;
+    private BinaryTree<Character> tree;
     private Position<Character>[] pos;
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
-        tree = new LinkedBinaryTree<>();
+        tree = new ArrayBinaryTree<>();
         pos = new Position[11];
         pos[0] = tree.addRoot('*');
         pos[1] = tree.insertLeft(pos[0], '+');
@@ -40,7 +41,7 @@ class LinkedBinaryTreeTest {
     @org.junit.jupiter.api.Test
     void isEmpty() {
         assertFalse(tree.isEmpty());
-        LinkedBinaryTree<Integer> t = new LinkedBinaryTree<>();
+        ArrayBinaryTree<Integer> t = new ArrayBinaryTree<>();
         assertTrue(t.isEmpty());
         t.addRoot(1);
         assertFalse(t.isEmpty());
@@ -99,7 +100,7 @@ class LinkedBinaryTreeTest {
 
     @org.junit.jupiter.api.Test
     void rootExcept() {
-        LinkedBinaryTree<Integer> t = new LinkedBinaryTree<Integer>();
+        ArrayBinaryTree<Integer> t = new ArrayBinaryTree<Integer>();
         RuntimeException thrown = assertThrows(RuntimeException.class,
                 t::root);
         assertEquals("The tree is empty", thrown.getMessage());
@@ -168,7 +169,7 @@ class LinkedBinaryTreeTest {
 
     @org.junit.jupiter.api.Test
     void iterator_EmptyTree() {
-        LinkedBinaryTree<Character> emptyTree = new LinkedBinaryTree<>();
+        ArrayBinaryTree<Character> emptyTree = new ArrayBinaryTree<>();
         Iterator<Position<Character>> iterator = emptyTree.iterator();
         assertFalse(iterator.hasNext());
     }
@@ -205,7 +206,7 @@ class LinkedBinaryTreeTest {
 
     @org.junit.jupiter.api.Test
     void addRoot() {
-        LinkedBinaryTree<Integer> t = new LinkedBinaryTree<>();
+        ArrayBinaryTree<Integer> t = new ArrayBinaryTree<>();
         Position<Integer> p1 = t.addRoot(1);
         assertEquals(p1, t.root());
     }
@@ -262,30 +263,29 @@ class LinkedBinaryTreeTest {
     @org.junit.jupiter.api.Test
     void subTree() {
         BinaryTree<Character> newTree = tree.subTree(pos[2]);
-        assertEquals(pos[2], newTree.root());
+        assertEquals(pos[2].getElement(), newTree.root().getElement()
+        );
         assertFalse(tree.hasRight(pos[0]));
     }
 
     @org.junit.jupiter.api.Test
     void attachLeft() {
-        LinkedBinaryTree<Character> t = new LinkedBinaryTree<>();
+        ArrayBinaryTree<Character> t = new ArrayBinaryTree<>();
         Position<Character> p1 = t.addRoot('-');
         Position<Character> p2 = t.insertLeft(p1, '1');
         Position<Character> p3 = t.insertRight(p1, '2');
         tree.attachLeft(pos[5], t);
-        assertEquals(pos[5], tree.parent(p1));
-        assertEquals(p1, tree.left(pos[5]));
+        assertEquals(tree.left(pos[5]).getElement(),p1.getElement());
     }
 
     @org.junit.jupiter.api.Test
     void attachRight() {
-        LinkedBinaryTree<Character> t = new LinkedBinaryTree<>();
+        ArrayBinaryTree<Character> t = new ArrayBinaryTree<>();
         Position<Character> p1 = t.addRoot('-');
         Position<Character> p2 = t.insertLeft(p1, '1');
         Position<Character> p3 = t.insertRight(p1, '2');
         tree.attachRight(pos[5], t);
-        assertEquals(pos[5], tree.parent(p1));
-        assertEquals(p1, tree.right(pos[5]));
+        assertEquals(p1.getElement(), tree.right(pos[5]).getElement());
     }
 
     @org.junit.jupiter.api.Test

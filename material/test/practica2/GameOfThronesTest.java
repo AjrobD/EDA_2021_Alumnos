@@ -15,7 +15,7 @@ class GameOfThronesTest {
     @BeforeEach
     void setUp() {
         got = new GameOfThrones();
-        path = "C:/Users/Usuario/Desktop/URJC/Primer Cuatrimestre/EDA/Practicas/Practica2/GOT_Families.txt";
+        path = "C:/Users/borja/Desktop/URJC/Cuarto/Primer Cuatrimestre/EDA/Practicas/Practica2/GOT_Families.txt";
         try {
             got.loadFile(path);
         } catch (FileNotFoundException e) {
@@ -26,7 +26,7 @@ class GameOfThronesTest {
     @Test
     void testLoad(){
         got = new GameOfThrones();
-        path = "C:/Users/Usuario/Desktop/URJC/Primer Cuatrimestre/EDA/Practicas/Practica2/GOT_Families.txt";
+        path = "C:/Users/borja/Desktop/URJC/Cuarto/Primer Cuatrimestre/EDA/Practicas/Practica2/GOT_Families.txt";
         try {
             got.loadFile(path);
         } catch (FileNotFoundException e) {
@@ -39,17 +39,18 @@ class GameOfThronesTest {
         String expected = "Eddard Stark";
         String output = got.findHeir("Stark");
         assertEquals(expected, output);
+        assertNotEquals("Cersei Lannister",got.findHeir("Lannister"));
     }
 
     @Test
     void testChangeFamily() {
-        got.changeFamily("Daenerys Targarien", "Eddard Stark");
-        assertTrue(got.areFamily("Daenerys Targarien", "Arya Stark"));
+        got.changeFamily("Daenerys Targaryen", "Eddard Stark");
+        assertTrue(got.areFamily("Daenerys Targaryen", "Arya Stark"));
     }
 
     @Test
     void testAreFamily() {
-        assertTrue(got.areFamily("Arya Stark", "Rob Stark"));
+        assertTrue(got.areFamily("Arya Stark", "Robb Stark"));
         assertFalse(got.areFamily("Catelyn Tully", "Aerys Targaryen"));
     }
 

@@ -247,7 +247,8 @@ abstract public class AbstractHashTableMap<K, V> implements Map<K, V> {
      *
      * @param key we are checking/inserting
      * @param i   number of times this key has caused a collision
-     * @return the offset to be added to the start index
+     * @return the
+     * to be added to the start index
      */
     abstract protected int offset(K key, int i);
 

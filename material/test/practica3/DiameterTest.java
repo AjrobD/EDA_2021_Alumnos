@@ -31,7 +31,9 @@ public class DiameterTest {
         Diameter dia = new Diameter();
         assertEquals(6, dia.evalDiameter(tree,pos[3],pos[6]));
         assertEquals(4, dia.evalDiameter(tree,pos[5],pos[6]));
+        assertEquals(5, dia.evalDiameter(tree,pos[1],pos[6]));
         assertEquals(3, dia.evalDiameter(tree,pos[7],pos[6]));
+        assertEquals(3, dia.evalDiameter(tree,pos[0],pos[3]));
         assertEquals(2, dia.evalDiameter(tree,pos[2],pos[5]));
         assertEquals(1, dia.evalDiameter(tree,pos[5],pos[5]));
     }

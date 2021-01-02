@@ -2,6 +2,7 @@ package material.tree.binarytree;
 
 import material.Position;
 import material.tree.iterators.PreorderBinaryTreeIterator;
+import usecase.practica2.GameOfThrones;
 
 import java.util.Stack;
 
@@ -21,6 +22,7 @@ public class BinaryTreeUtils<E> {
 	  * Given a tree the method returns a new tree where all left children 
 	  * become right children and vice versa
 	*/
+	/*
 	public BinaryTree<E> mirror() {
 		BinaryTree<E> newTree = new LinkedBinaryTree<E>();
 		Stack<Position<E>> nodeStack = new Stack<>();
@@ -40,11 +42,32 @@ public class BinaryTreeUtils<E> {
 				Position<E> posRight =newTree.insertRight(pos,leftElem);
 				nodeStack.add(posRight);
 			}
-
-
 		}
 		return newTree;
 	}
+	*/
+
+	public BinaryTree<E> mirror(){
+		BinaryTree<E> newTree = new LinkedBinaryTree<E>();
+		invert(newTree.addRoot(tree.root().getElement()), tree.root(), newTree, tree);
+		return newTree;
+	}
+
+	public void invert(Position<E> newNode, Position<E> oldNode, BinaryTree<E> newTree, BinaryTree<E> oldTree){
+		if(newNode!=null&&oldNode!=null){
+			if(oldTree.hasLeft(oldNode)){
+				Position<E> oldLeft = oldTree.left(oldNode);
+				Position<E> newRight = newTree.insertRight(newNode,oldLeft.getElement());
+				invert(newRight,oldLeft,newTree,oldTree);
+			}
+			if(oldTree.hasRight(oldNode)){
+				Position<E> oldRight = oldTree.right(oldNode);
+				Position<E> newLeft = newTree.insertLeft(newNode,oldRight.getElement());
+				invert(newLeft,oldRight,newTree,oldTree);
+			}
+		}
+	}
+
 	/** 
 	  * Determines whether the element e is the tree or not
 	*/
@@ -52,7 +75,7 @@ public class BinaryTreeUtils<E> {
 		Boolean found = false;
 		PreorderBinaryTreeIterator<E> iterator = new PreorderBinaryTreeIterator<E>(this.tree);
 		while(iterator.hasNext()&&!found){
-			found = iterator.next().getElement()==e;
+			found = iterator.next().getElement().equals(e);
 		}
 		return found;
 	}

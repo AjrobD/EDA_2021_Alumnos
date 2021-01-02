@@ -8,10 +8,27 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.HashMap;
+
 
 public class GameOfThrones {
+
+    public class Tuple<X, Y> {
+        public final X x;
+        public final Y y;
+        public Tuple(X x, Y y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public X getX() {
+            return x;
+        }
+
+        public Y getY() {
+            return y;
+        }
+    }
 
     ArrayList<LinkedTree<FamilyMember>> arboles;
     public GameOfThrones(){
@@ -62,68 +79,92 @@ public class GameOfThrones {
 
     }
 
-    private FamilyMember getMember(String id, ArrayList<FamilyMember> lista){
-        for(FamilyMember member: lista){
-            if(id.equals(member.getId())){
-                return member;
+    ArrayList<Position<FamilyMember>> getVarones(ArrayList<Position<FamilyMember>> candidatos){
+        ArrayList<Position<FamilyMember>> varones = new ArrayList();
+        for(Position<FamilyMember> miembro: candidatos){
+            if(miembro.getElement().getGenero()=="M"){
+                varones.add(miembro);
             }
         }
-        return null;
+        return varones;
     }
 
-    private Position<FamilyMember> getMemberPosition (String id, ArrayList<Position<FamilyMember>> lista){
-        for(Position<FamilyMember> member: lista){
-            if(id.equals(member.getElement().getId())){
-                return member;
+    Position<FamilyMember> getMayor(ArrayList<Position<FamilyMember>> candidatos){
+        Position<FamilyMember> candidato = null;
+        for(Position<FamilyMember> miembro: candidatos){
+            if(candidato==null||miembro.getElement().getEdad()>candidato.getElement().getEdad()){
+                candidato=miembro;
             }
         }
-        return null;
+        return candidato;
     }
 
-    private LinkedTree<FamilyMember> getTree(FamilyMember padre, ArrayList<LinkedTree<FamilyMember>> arboles){
-        for(LinkedTree<FamilyMember> arbol: arboles){
-            for(Position<FamilyMember> miembro: arbol){
-                if(miembro.getElement().getId().equals(padre.getId())){
-                    return arbol;
+    private Position<FamilyMember> getMemberPosition(String memberName, Position<FamilyMember> node, LinkedTree<FamilyMember> familia){
+        if(node!=null){
+            if(node.getElement().getNombre().equals(memberName)){
+                return node;
+            }
+            else{
+                for(Position<FamilyMember> child: familia.children(node)){
+                    Position<FamilyMember> member = getMemberPosition(memberName,child,familia);
+                    if(member!=null){
+                        return member;
+                    }
                 }
             }
         }
         return null;
     }
 
+    private LinkedTree<FamilyMember> findFamilyByName(String name){
+        int n = arboles.size();
+        int i = 0;
+        boolean found = false;
+        Position<FamilyMember> member = null;
+        LinkedTree<FamilyMember> familia = null;
+        while(i<n&&!found){
+            familia = arboles.get(i);
+            member = getMemberPosition(name,familia.root(),familia);
+            found=member!=null;
+            i++;
+        }
+        return familia;
+    }
+
     public void loadFile(String pathToFile) throws FileNotFoundException {
         BufferedReader reader;
-        ArrayList<FamilyMember> todos = new ArrayList<>();
-        ArrayList<Position<FamilyMember>> todosPosition = new ArrayList<>();
+        HashMap<String,FamilyMember> todos = new HashMap<>();
+        HashMap<String,Tuple<Position<FamilyMember>,LinkedTree<FamilyMember>>> todosPosition = new HashMap<>();
         try{
             reader = new BufferedReader(new FileReader(pathToFile));
             String line = reader.readLine();
             while (line != null && !line.equals("---------------------------------------------------------------------------------------")){
                 String[] words = line.split(" ");
                 String id = words[0];
-                 String nombre = words[2]+" "+words[3];
+                String nombre = words[2]+" "+words[3];
                 String sexo = words[4].replaceAll("[()]", "");
                 int edad = Integer.parseInt(words[5]);
                 FamilyMember miembro = new FamilyMember(id,nombre,sexo,edad);
-                todos.add(miembro);
+                todos.put(miembro.getId(),miembro);
                 //read next line
                 line = reader.readLine();
             }
             int numero = Integer.parseInt(reader.readLine());
             for(int i=0;i<numero;i++){
                 String id = reader.readLine();
-                FamilyMember member = getMember(id,todos);
+                FamilyMember member = todos.get(id);
                 LinkedTree<FamilyMember> arbol = new LinkedTree<>();
-                todosPosition.add(arbol.addRoot(member));
+                todosPosition.put(id,new Tuple<>(arbol.addRoot(member),arbol));
                 arboles.add(arbol);
             }
             line = reader.readLine();
             while (line != null){
                 String[] words = line.split(" -> ");
-                Position<FamilyMember> padre = getMemberPosition(words[0],todosPosition);
-                FamilyMember hijo = getMember(words[1],todos);
-                LinkedTree<FamilyMember> tree = getTree(padre.getElement(),arboles);
-                todosPosition.add(tree.add(hijo, padre));
+                Tuple<Position<FamilyMember>,LinkedTree<FamilyMember>> tupla = todosPosition.get(words[0]);
+                Position<FamilyMember> padre = tupla.getX();
+                LinkedTree<FamilyMember> tree = tupla.getY();
+                FamilyMember hijo = todos.get(words[1]);
+                todosPosition.put(hijo.getId(),new Tuple<>(tree.add(hijo, padre),tree));
                 //read next line
                 line = reader.readLine();
             }
@@ -132,9 +173,6 @@ public class GameOfThrones {
         catch (IOException e){
             e.printStackTrace();
         }
-
-
-
     }
 
     public LinkedTree<FamilyMember> getFamily(String surname){
@@ -153,26 +191,14 @@ public class GameOfThrones {
     public String findHeir(String surname){
         LinkedTree<FamilyMember> familia = this.getFamily(surname);
         Position<FamilyMember> padre = familia.root();
-        Queue<ArrayList<Position<FamilyMember>>> candidatos = new LinkedList<>();
         ArrayList<Position<FamilyMember>> hijos = (ArrayList<Position<FamilyMember>>) familia.children(padre);
-        candidatos.add(hijos);
-        ArrayList<Position<FamilyMember>> candidato = candidatos.remove();
-        while(candidato!=null){
-            int edadMayor = 0;
-            FamilyMember heredero = null;
-            for(Position<FamilyMember> hijo : candidato){
-                if(hijo.getElement().getGenero().equals("M")&&hijo.getElement().getEdad()>edadMayor){
-                    edadMayor=hijo.getElement().getEdad();
-                    heredero = hijo.getElement();
-                }
-                candidatos.add((ArrayList<Position<FamilyMember>>) familia.children(hijo));
-            }
-            if(heredero!=null){
-                return heredero.getNombre();
-            }
-            candidato = candidatos.remove();
+        ArrayList<Position<FamilyMember>> varones = getVarones(hijos);
+        if(varones.isEmpty()){
+            return getMayor(hijos).getElement().getNombre();
         }
-        return "";
+        else{
+            return getMayor(varones).getElement().getNombre();
+        }
     }
 
     public void changeFamily(String memberName, String newParent){
@@ -182,51 +208,21 @@ public class GameOfThrones {
         //consigo el position del que quiero cambiar
         LinkedTree<FamilyMember> familia = this.getFamily(memberName.split(" ")[1]);
         Position<FamilyMember> padre = familia.root();
-        Queue<ArrayList<Position<FamilyMember>>> candidatos = new LinkedList<>();
-        ArrayList<Position<FamilyMember>> hijos = (ArrayList<Position<FamilyMember>>) familia.children(padre);
-        candidatos.add(hijos);
-        ArrayList<Position<FamilyMember>> candidato = candidatos.remove();
-        while(candidato!=null&&origen==null){
-            for(Position<FamilyMember> hijo : candidato){
-                if(hijo.getElement().getNombre().equals(memberName)){
-                    origen = hijo;
-                }
-            }
-            candidato = candidatos.remove();
-        }
+        origen = getMemberPosition(memberName,padre,familia);
+        familia.remove(origen);
+
         //consigo el position del nuevo padre
         familia = this.getFamily(newParent.split(" ")[1]);
         padre = familia.root();
-        candidatos = new LinkedList<>();
-        hijos = (ArrayList<Position<FamilyMember>>) familia.children(padre);
-        candidatos.add(hijos);
-        candidato = candidatos.remove();
-        while(candidato!=null&&destino==null){
-            for(Position<FamilyMember> hijo : candidato){
-                if(hijo.getElement().getNombre().equals(newParent)){
-                    destino = hijo;
-                }
-            }
-            candidato = candidatos.remove();
-        }
-
-        familia.moveSubtree2(origen,destino);
-        //esta mal porque moveSubtree2 es una operación que no comprueba nada y que no esta pensada para cambiar entre arboles
-        //dado que no cambia cosas como el size
+        destino = getMemberPosition(newParent,padre,familia);
+        familia.add(origen.getElement(),destino);
     }
 
     //esta mal porque usa getFamily, que busca por apellidos, pero si hemos cambiado a uno de familia sus apellidos no coincidirán
     public boolean areFamily(String name1, String name2){
-        FamilyMember root1 = null;
-        FamilyMember root2 = null;
-
-        LinkedTree<FamilyMember> familia = this.getFamily(name1.split(" ")[1]);
-        root1 = familia.root().getElement();
-
-        familia = this.getFamily(name2.split(" ")[1]);
-        root2 = familia.root().getElement();
-
-        return (root1.getNombre().equals(root2.getNombre()));
+        LinkedTree<FamilyMember> family1 = findFamilyByName(name1);
+        LinkedTree<FamilyMember> family2 = findFamilyByName(name2);
+        return family1.root().equals(family2.root());
     }
 
     //metodo que te de la familia pero en vez de buscar por apellido encuentre el nodo correcto

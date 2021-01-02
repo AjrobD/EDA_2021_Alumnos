@@ -6,11 +6,13 @@ import usecase.practica4.PearStore;
 import usecase.practica4.Product;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PearRegisterTest {
     private static PearRegister register;
@@ -18,7 +20,7 @@ class PearRegisterTest {
     @org.junit.jupiter.api.BeforeAll
     static void loadFile() {
         register = new PearRegister();
-        String path = "C:/Users/Usuario/Desktop/URJC/Primer Cuatrimestre/EDA/Practicas/Practica4/PearSalesFiles.txt";
+        String path = "C:/Users/borja/Desktop/URJC/Cuarto/Primer Cuatrimestre/EDA/Practicas/Practica4/PearSalesFiles.txt";
         try {
             register.loadFile(path);
         } catch (IOException e) {

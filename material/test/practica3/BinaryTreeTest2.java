@@ -3,8 +3,7 @@ package material.test.practica3;
 import material.Position;
 import material.tree.binarytree.ArrayBinaryTree;
 
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BinaryTreeTest2 {
     private ArrayBinaryTree<Integer> tree;

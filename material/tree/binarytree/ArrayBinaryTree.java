@@ -219,6 +219,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
         return tree;
     }
 
+    /*
     @Override
     public void attachLeft(Position<E> p, BinaryTree<E> tree) throws RuntimeException {
         if (tree == this) {
@@ -253,6 +254,27 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
             }
         }
     }
+    */
+    public void attachLeft(Position<E> p, BinaryTree<E> tree) throws RuntimeException {
+        if (tree == this) {
+            throw new RuntimeException("Cannot attach a tree over himself");
+        }
+        if (this.hasLeft(p)) {
+            throw new RuntimeException("Node already has a left child");
+        }
+        if (tree != null && !tree.isEmpty()) {
+            insertTree(this.insertLeft(p,tree.root().getElement()),tree.root(),this,tree);
+        }
+    }
+
+    private void insertTree(Position<E> dest, Position<E> origen, BinaryTree<E> newTree, BinaryTree<E> oldTree){
+        if(oldTree.hasLeft(origen)){
+            insertTree(newTree.insertLeft(dest,oldTree.left(origen).getElement()),oldTree.left(origen),newTree,oldTree);
+        }
+        if(oldTree.hasRight(origen)){
+            insertTree(newTree.insertRight(dest,oldTree.right(origen).getElement()),oldTree.right(origen),newTree,oldTree);
+        }
+    }
 
     @Override
     public void attachRight(Position<E> p, BinaryTree<E> tree) throws RuntimeException {
@@ -263,29 +285,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
             throw new RuntimeException("Node already has a left child");
         }
         if (tree != null && !tree.isEmpty()) {
-            Queue<Position<E>> nodeQueueNew = new ArrayDeque<>();
-            Queue<Position<E>> nodeQueueOld = new ArrayDeque<>();
-            BFSIterator iterator = new BFSIterator(tree);
-            while (iterator.hasNext()) {
-                Position<E> node = iterator.next();
-                Position<E> firstNew = nodeQueueNew.peek();
-                Position<E> firstOld = nodeQueueOld.peek();
-
-                if (node == tree.root()) {
-                    nodeQueueNew.add(insertRight(p, node.getElement()));
-                    nodeQueueOld.add(node);
-                } else if (node == tree.left(firstOld)) {
-                    nodeQueueNew.add(insertLeft(firstNew, node.getElement()));
-                    nodeQueueOld.add(node);
-                } else if (node == tree.right(firstOld)) {
-                    nodeQueueNew.add(insertRight(firstNew, node.getElement()));
-                    nodeQueueOld.add(node);
-                }
-                if (firstOld != null && (node == tree.right(firstOld) || (node == tree.left(firstOld) && !tree.hasRight(firstOld)))) {
-                    nodeQueueNew.remove();
-                    nodeQueueOld.remove();
-                }
-            }
+            insertTree(this.insertRight(p,tree.root().getElement()),tree.root(),this,tree);
         }
     }
 
@@ -368,7 +368,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
     @Override
     public boolean isRoot(Position<E> v) {
         ABTPos<E> pos = checkPosition(v);
-        return pos.getPos()==0;
+        return pos.getPos()==1;
     }
 
     @Override

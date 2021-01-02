@@ -4,11 +4,8 @@ import material.Position;
 import material.tree.binarytree.ArrayBinaryTree;
 import material.tree.binarytree.BinaryTree;
 import material.tree.iterators.InorderBinaryTreeIterator;
-import org.junit.Assert;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BinaryTreeTest {
     private BinaryTree<Integer> tree;
@@ -67,7 +64,7 @@ public class BinaryTreeTest {
 
         RuntimeException thrown = assertThrows(RuntimeException.class,
                 () -> tree.remove(pos[1]));
-        Assert.assertEquals("Cannot remove node with two children", thrown.getMessage());
+        assertEquals("Cannot remove node with two children", thrown.getMessage());
 
     }
 
