@@ -3,6 +3,7 @@ package material.tree.binarytree;
 import material.Position;
 import material.tree.iterators.BFSIterator;
 import material.tree.iterators.InorderBinaryTreeIterator;
+import material.tree.narytree.LCRSTree;
 
 import java.util.*;
 
@@ -12,10 +13,12 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
         private T element;
         private int pos;
+        private ArrayBinaryTree<E> myTree;
 
-        public ABTPos(T element, int pos) {
+        public ABTPos(T element, int pos,ArrayBinaryTree<E> myTree) {
             this.element = element;
             this.pos = pos;
+            this.myTree=myTree;
         }
 
         @Override
@@ -33,6 +36,10 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
 
         public void setPos(int pos) {
             this.pos = pos;
+        }
+
+        public ArrayBinaryTree<E> getMyTree(){
+            return myTree;
         }
     }
 
@@ -119,7 +126,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
         if(tree[leftPos]!=null){
             throw new RuntimeException("Node already has a left child");
         }
-        ABTPos<E> newNode = new ABTPos<>(e,leftPos);
+        ABTPos<E> newNode = new ABTPos<>(e,leftPos,this);
         tree[leftPos] = newNode;
         return newNode;
     }
@@ -138,7 +145,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
         if(tree[rightPos]!=null){
             throw new RuntimeException("Node already has a right child");
         }
-        ABTPos<E> newNode = new ABTPos<>(e,rightPos);
+        ABTPos<E> newNode = new ABTPos<>(e,rightPos,this);
         tree[rightPos] = newNode;
         return newNode;
     }
@@ -376,7 +383,7 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
         if(!isEmpty()){
             throw new RuntimeException("Tree already has a root");
         }
-        ABTPos<E> root = new ABTPos<E>(e,1);
+        ABTPos<E> root = new ABTPos<E>(e,1,this);
         this.tree[1] = root;
         return root;
     }
@@ -395,7 +402,12 @@ public class ArrayBinaryTree<E> implements BinaryTree<E> {
         if (!(p instanceof ABTPos)) {
             throw new RuntimeException("The position is invalid");
         }
-        return (ABTPos<E>) p;
+        ABTPos<E> aux = (ABTPos<E>) p;
+
+        if (aux.getMyTree() != this) {
+            throw new IllegalStateException("The node is not from this tree");
+        }
+        return aux;
     }
 
     private void relocate(int father, int newFather, Position<E> son){

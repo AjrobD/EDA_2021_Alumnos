@@ -218,15 +218,10 @@ public class GameOfThrones {
         familia.add(origen.getElement(),destino);
     }
 
-    //esta mal porque usa getFamily, que busca por apellidos, pero si hemos cambiado a uno de familia sus apellidos no coincidirán
     public boolean areFamily(String name1, String name2){
         LinkedTree<FamilyMember> family1 = findFamilyByName(name1);
         LinkedTree<FamilyMember> family2 = findFamilyByName(name2);
         return family1.root().equals(family2.root());
     }
 
-    //metodo que te de la familia pero en vez de buscar por apellido encuentre el nodo correcto
-    private LinkedTree<FamilyMember> getFamilia(String nombre){
-        throw new RuntimeException("No implementado");
-    }
 }

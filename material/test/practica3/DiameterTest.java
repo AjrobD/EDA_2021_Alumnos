@@ -6,6 +6,7 @@ import material.tree.binarytree.LinkedBinaryTree;
 import usecase.practica3.Diameter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class DiameterTest {
 
