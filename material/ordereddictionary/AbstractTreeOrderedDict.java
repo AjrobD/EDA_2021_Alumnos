@@ -3,6 +3,7 @@ package material.ordereddictionary;
 import material.Position;
 import material.tree.binarysearchtree.BinarySearchTree;
 
+import javax.lang.model.type.ArrayType;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -194,7 +195,11 @@ abstract public class AbstractTreeOrderedDict<K, V> implements
     }
 
     public Iterable<Entry<K, V>> findRange(K minkey, K maxkey) {
-        throw new RuntimeException("Not implemented.");
+        List<Entry<K,V>> list = new ArrayList<>();
+        for(Position<Entry<K,V>> pos :this.bsTree.findRange(this.find(minkey),this.find(maxkey))){
+            list.add(pos.getElement());
+        }
+        return list;
     }
 
 }
