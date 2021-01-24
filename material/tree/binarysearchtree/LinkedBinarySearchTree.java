@@ -271,32 +271,106 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
 	 * Ejercicio 1: first, last, successors, predecessors
 	 */
 	public Position<E> first() throws RuntimeException {
-		throw new RuntimeException("Not implemented.");
+		Position<E> aux = this.binTree.root();
+		while(this.binTree.left(aux).getElement()!=null){
+			aux = this.binTree.left(aux);
+		}
+		return aux;
 	}
 
 	public Position<E> last() throws RuntimeException {
-		throw new RuntimeException("Not implemented.");
+		Position<E> aux = this.binTree.root();
+		while(this.binTree.right(aux).getElement()!=null){
+			aux = this.binTree.right(aux);
+		}
+		return aux;
 
 	}
 	public Iterable<Position<E>> successors(Position<E> pos){
-		throw new RuntimeException("Not implemented.");
+		List<Position<E>> sucesores = new ArrayList<>();
+		if(this.binTree.right(pos).getElement()!=null){
+			addToListUnder(this.binTree.right(pos),sucesores);
+		}
+		if(!this.binTree.isRoot(pos)) {
+			Position<E> parent = this.binTree.parent(pos);
+			addToListUppBigger(pos, sucesores, true);
+		}
+		return sucesores;
+	}
+
+	public Iterable<Position<E>> predecessors(Position<E> pos){
+		List<Position<E>> predecesores = new ArrayList<>();
+		if(this.binTree.left(pos).getElement()!=null){
+			addToListUnder(this.binTree.left(pos),predecesores);
+		}
+		if(!this.binTree.isRoot(pos)) {
+			Position<E> parent = this.binTree.parent(pos);
+			addToListUppLesser(pos, predecesores, true);
+		}
+		return predecesores;
+	}
+
+	public void addToListUnder(Position<E> pos, List<Position<E>> list){
+		list.add(pos);
+		if(this.binTree.left(pos).getElement()!=null){
+			addToListUnder(this.binTree.left(pos),list);
+		}
+		if(this.binTree.right(pos).getElement()!=null){
+			addToListUnder(this.binTree.right(pos),list);
+		}
+	}
+
+	public void addToListUppLesser(Position<E> pos, List<Position<E>> list, Boolean fromLeft){
+		if(!this.binTree.isRoot(pos)) {//si es root no puedo mirar el parent
+			Position<E> parent = this.binTree.parent(pos);
+			if(this.binTree.left(parent).equals(pos)) {//si es hijo izquierdo
+				addToListUppLesser(parent,list,true);
+			}
+			else{//si no es hijo izquierdo
+				list.add(parent);
+				addToListUppLesser(parent,list,false);
+			}
+		}
+		if(this.binTree.left(pos).getElement()!=null&&!fromLeft){
+			addToListUnder(this.binTree.left(pos),list);
+		}
+	}
+	public void addToListUppBigger(Position<E> pos, List<Position<E>> list, Boolean fromRight){
+		if(!this.binTree.isRoot(pos)) {//si es root no puedo mirar el parent
+			Position<E> parent = this.binTree.parent(pos);
+			if(this.binTree.right(parent).equals(pos)) {//si es hijo derecho
+				addToListUppBigger(parent,list,true);
+			}
+			else{//si no es hijo derecho
+				list.add(parent);
+				addToListUppBigger(parent,list,false);
+			}
+		}
+		if(this.binTree.right(pos).getElement()!=null&&!fromRight){
+			addToListUnder(this.binTree.right(pos),list);
+		}
 	}
     /*
      * Ejercicio 2: findRange
      */
     /**Find range in binary search trees. */
     public Iterable<Position<E>> findRange(E minValue, E maxValue) throws RuntimeException{
-        throw new RuntimeException("Not implemented.");
+		List<Position<E>> range = new ArrayList<>();
+		addToRange(range,this.binTree.root(),minValue,maxValue);
+		return range;
     }
 
-
-
-
-    public Iterable<Position<E>> predecessors(Position<E> pos){
-        throw new RuntimeException("Not implemented.");
-    }
-
-
+    private void addToRange(List<Position<E>> range, Position<E> pos, E minValue, E maxValue){
+    	if(comparator.compare(pos.getElement(),minValue)>=0&&comparator.compare(pos.getElement(),maxValue)<=0){
+    		range.add(pos);
+		}
+		if(comparator.compare(pos.getElement(),minValue)>=0&&this.binTree.left(pos).getElement()!=null){
+			addToRange(range,this.binTree.left(pos),minValue,maxValue);
+		}
+		if(comparator.compare(pos.getElement(),maxValue)<=0&&this.binTree.right(pos).getElement()!=null){
+			addToRange(range,this.binTree.right(pos),minValue,maxValue);
+		}
+	}
 }
 
 
