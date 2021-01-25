@@ -272,6 +272,9 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
 	 */
 	public Position<E> first() throws RuntimeException {
 		Position<E> aux = this.binTree.root();
+		if (aux.getElement() == null) {
+			throw new RuntimeException("No first element.");
+		}
 		while(this.binTree.left(aux).getElement()!=null){
 			aux = this.binTree.left(aux);
 		}
@@ -280,6 +283,9 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
 
 	public Position<E> last() throws RuntimeException {
 		Position<E> aux = this.binTree.root();
+		if (aux.getElement() == null) {
+			throw new RuntimeException("No last element.");
+		}
 		while(this.binTree.right(aux).getElement()!=null){
 			aux = this.binTree.right(aux);
 		}
@@ -367,6 +373,9 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
      */
     /**Find range in binary search trees. */
     public Iterable<Position<E>> findRange(E minValue, E maxValue) throws RuntimeException{
+    	if(comparator.compare(minValue, maxValue)>0){
+    		throw new RuntimeException("Invalid range. (min>max)");
+		}
 		List<Position<E>> range = new ArrayList<>();
 		addToRange(range,this.binTree.root(),minValue,maxValue);
 		return range;
@@ -389,6 +398,9 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
 	 */
 
 	public Iterable<Position<E>>  findRangeComp(E minValue, E maxValue, Comparator<E> comparator) throws RuntimeException{
+		if(comparator.compare(minValue, maxValue)>0){
+			throw new RuntimeException("Invalid range. (min>max)");
+		}
 		List<Position<E>> range = new ArrayList<>();
 		addToRangeComp(range,this.binTree.root(),minValue,maxValue, comparator);
 		return range;

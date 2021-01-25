@@ -277,6 +277,9 @@ public class AVLTree<E> implements BinarySearchTree<E> {
      */
 
     public Iterable<Position<E>> findRange(E minValue, E maxValue) throws RuntimeException{
+        if(bst.comparator.compare(new AVLInfo<E>(minValue), new AVLInfo<E>(maxValue))>0){
+            throw new RuntimeException("Invalid range. (min>max)");
+        }
         List<Position<E>> range = new ArrayList<>();
         addToRange(range,this.bst.binTree.root().getElement(),minValue,maxValue);
         return range;
@@ -394,6 +397,9 @@ public class AVLTree<E> implements BinarySearchTree<E> {
 
 
     public Iterable<Position<E>> findRangeComp(E minValue, E maxValue, Comparator<E> comparator) throws RuntimeException{
+        if(comparator.compare(minValue, maxValue)>0){
+            throw new RuntimeException("Invalid range. (min>max)");
+        }
         List<Position<E>> range = new ArrayList<>();
         addToRangeComp(range,this.bst.binTree.root().getElement(),minValue,maxValue,comparator);
         return range;

@@ -325,6 +325,9 @@ public class RBTree<E> implements BinarySearchTree<E> {
 	 */
 
 	public Iterable<Position<E>> findRange(E minValue, E maxValue) throws RuntimeException{
+		if(bst.comparator.compare(new RBInfo<E>(minValue), new RBInfo<E>(maxValue))>0){
+			throw new RuntimeException("Invalid range. (min>max)");
+		}
 		List<Position<E>> range = new ArrayList<>();
 		addToRange(range,this.bst.binTree.root().getElement(),minValue,maxValue);
 		return range;
@@ -443,6 +446,9 @@ public class RBTree<E> implements BinarySearchTree<E> {
 	 */
 
 	public Iterable<Position<E>> findRangeComp(E minValue, E maxValue, Comparator<E> comparator) throws RuntimeException{
+		if(comparator.compare(minValue, maxValue)>0){
+			throw new RuntimeException("Invalid range. (min>max)");
+		}
 		List<Position<E>> range = new ArrayList<>();
 		addToRangeComp(range,this.bst.binTree.root().getElement(),minValue,maxValue, comparator);
 		return range;
