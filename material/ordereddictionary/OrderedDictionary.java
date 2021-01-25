@@ -1,5 +1,7 @@
 package material.ordereddictionary;
 
+import java.util.Comparator;
+
 /**
  * An interface for a dictionary storing (key-value) pairs.
  *
@@ -56,4 +58,8 @@ public interface OrderedDictionary<K, V> {
      * @return An iterable of entries
      */
     Iterable<Entry<K, V>> findRange(K minkey, K maxkey);
+    Iterable<Entry<K, V>> findRangeComp(K minkey, K maxkey, Comparator<Entry<K,V>> comparator);
+
+    Entry<K,V> first();
+    Entry<K,V> last();
 }

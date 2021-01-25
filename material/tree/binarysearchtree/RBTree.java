@@ -1,9 +1,6 @@
 package material.tree.binarysearchtree;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import material.Position;
 
@@ -334,16 +331,18 @@ public class RBTree<E> implements BinarySearchTree<E> {
 	}
 
 	private void addToRange(List<Position<E>> range, Position<E> pos, E minValue, E maxValue){
-		if(bst.comparator.compare(checkPosition(pos),new RBInfo<E>(minValue))>=0&&bst.comparator.compare(checkPosition(pos),new RBInfo<E>(maxValue))<=0){
-			range.add(pos);
-		}
 		if(bst.comparator.compare(checkPosition(pos),new RBInfo<E>(minValue))>=0&&this.bst.binTree.left(checkPosition(pos).getTreePosition()).getElement()!=null){
 			addToRange(range,this.bst.binTree.left(checkPosition(pos).getTreePosition()).getElement(),minValue,maxValue);
+		}
+		if(bst.comparator.compare(checkPosition(pos),new RBInfo<E>(minValue))>=0&&bst.comparator.compare(checkPosition(pos),new RBInfo<E>(maxValue))<=0){
+			range.add(pos);
 		}
 		if(bst.comparator.compare(checkPosition(pos),new RBInfo<E>(maxValue))<=0&&this.bst.binTree.right(checkPosition(pos).getTreePosition()).getElement()!=null){
 			addToRange(range,this.bst.binTree.right(checkPosition(pos).getTreePosition()).getElement(),minValue,maxValue);
 		}
 	}
+
+
 
 	/**
 	 * Ejercicio 2: first, last, successors, predecessors
@@ -359,7 +358,7 @@ public class RBTree<E> implements BinarySearchTree<E> {
 		Position<RBInfo<E>> position = aux.getTreePosition();
 		List<Position<E>> sucesores = new ArrayList<>();
 		if(this.bst.binTree.right(position).getElement()!=null){
-			addToListUnder(this.bst.binTree.right(position).getElement(),sucesores);
+			addToListUnder(this.bst.binTree.right(position).getElement(),sucesores, false);
 		}
 		if(!this.bst.binTree.isRoot(position)) {
 			Position<E> parent = this.bst.binTree.parent(position).getElement();
@@ -373,30 +372,45 @@ public class RBTree<E> implements BinarySearchTree<E> {
 		Position<RBInfo<E>> position = aux.getTreePosition();
 		List<Position<E>> predecesores = new ArrayList<>();
 		if(this.bst.binTree.left(position).getElement()!=null){
-			addToListUnder( this.bst.binTree.left(position).getElement(),predecesores);
+			addToListUnder( this.bst.binTree.left(position).getElement(),predecesores, true);
 		}
 		if(!this.bst.binTree.isRoot(position)) {
 			Position<E> parent = this.bst.binTree.parent(position).getElement();
 			addToListUppLesser(pos, predecesores, true);
 		}
+		Collections.reverse(predecesores);
 		return predecesores;
 	}
 
-	public void addToListUnder(Position<E> pos, List<Position<E>> list){
+	public void addToListUnder(Position<E> pos, List<Position<E>> list, Boolean lesser){
 		RBInfo<E> aux = checkPosition(pos);
 		Position<RBInfo<E>> position = aux.getTreePosition();
-		list.add(pos);
-		if(this.bst.binTree.left(position).getElement()!=null){
-			addToListUnder( this.bst.binTree.left(position).getElement(),list);
+		if(lesser){
+			if(this.bst.binTree.right(position).getElement()!=null){
+				addToListUnder( this.bst.binTree.right(position).getElement(),list,lesser);
+			}
+			list.add(pos);
+			if(this.bst.binTree.left(position).getElement()!=null){
+				addToListUnder( this.bst.binTree.left(position).getElement(),list,lesser);
+			}
 		}
-		if(this.bst.binTree.right(position).getElement()!=null){
-			addToListUnder( this.bst.binTree.right(position).getElement(),list);
+		else {
+			if (this.bst.binTree.left(position).getElement() != null) {
+				addToListUnder(this.bst.binTree.left(position).getElement(), list, lesser);
+			}
+			list.add(pos);
+			if (this.bst.binTree.right(position).getElement() != null) {
+				addToListUnder(this.bst.binTree.right(position).getElement(), list, lesser);
+			}
 		}
 	}
 
 	public void addToListUppLesser(Position<E> pos, List<Position<E>> list, Boolean fromLeft){
 		RBInfo<E> aux = checkPosition(pos);
 		Position<RBInfo<E>> position = aux.getTreePosition();
+		if(this.bst.binTree.left(position).getElement()!=null&&!fromLeft){
+			addToListUnder( this.bst.binTree.left(position).getElement(),list,true);
+		}
 		if(!this.bst.binTree.isRoot(position)) { //si es root no puedo mirar el parent
 			Position<RBInfo<E>> parent = this.bst.binTree.parent(position);
 			if (this.bst.binTree.left(parent).equals(position)) { //si es hijo izquierdo
@@ -406,13 +420,13 @@ public class RBTree<E> implements BinarySearchTree<E> {
 				addToListUppLesser(parent.getElement(), list, false);
 			}
 		}
-		if(this.bst.binTree.left(position).getElement()!=null&&!fromLeft){
-			addToListUnder( this.bst.binTree.left(position).getElement(),list);
-		}
 	}
 	public void addToListUppBigger(Position<E> pos, List<Position<E>> list, Boolean fromRight){
 		RBInfo<E> aux = checkPosition(pos);
 		Position<RBInfo<E>> position = aux.getTreePosition();
+		if(this.bst.binTree.right(position).getElement()!=null&&!fromRight){
+			addToListUnder( this.bst.binTree.right(position).getElement(),list,false);
+		}
 		if(!this.bst.binTree.isRoot(position)) { //si es root no puedo mirar el parent
 			Position<RBInfo<E>> parent = this.bst.binTree.parent(position);
 			if (this.bst.binTree.right(parent).equals(position)) { //si es hijo derecho
@@ -422,8 +436,27 @@ public class RBTree<E> implements BinarySearchTree<E> {
 				addToListUppBigger(parent.getElement(), list, false);
 			}
 		}
-		if(this.bst.binTree.right(position).getElement()!=null&&!fromRight){
-			addToListUnder( this.bst.binTree.right(position).getElement(),list);
+	}
+
+	/**
+	 * metodo findRange para cuando el arbol ha sido creado sin el comparador
+	 */
+
+	public Iterable<Position<E>> findRangeComp(E minValue, E maxValue, Comparator<E> comparator) throws RuntimeException{
+		List<Position<E>> range = new ArrayList<>();
+		addToRangeComp(range,this.bst.binTree.root().getElement(),minValue,maxValue, comparator);
+		return range;
+	}
+
+	private void addToRangeComp(List<Position<E>> range, Position<E> pos, E minValue, E maxValue, Comparator<E> comparator){
+		if(comparator.compare(pos.getElement(), minValue)>=0&&this.bst.binTree.left(checkPosition(pos).getTreePosition()).getElement()!=null){
+			addToRangeComp(range,this.bst.binTree.left(checkPosition(pos).getTreePosition()).getElement(),minValue,maxValue,comparator);
+		}
+		if(comparator.compare(pos.getElement(),minValue)>=0&&comparator.compare(pos.getElement(), maxValue)<=0){
+			range.add(pos);
+		}
+		if(comparator.compare(pos.getElement(),maxValue)<=0&&this.bst.binTree.right(checkPosition(pos).getTreePosition()).getElement()!=null){
+			addToRangeComp(range,this.bst.binTree.right(checkPosition(pos).getTreePosition()).getElement(),minValue,maxValue,comparator);
 		}
 	}
 

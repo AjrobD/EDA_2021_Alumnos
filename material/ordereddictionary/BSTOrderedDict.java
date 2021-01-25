@@ -19,7 +19,7 @@ public class BSTOrderedDict<K, V> extends AbstractTreeOrderedDict<K, V> {
 	}
 	
 	protected LinkedBinarySearchTree<Entry<K,V>> createTree (){
-		return new LinkedBinarySearchTree<Entry<K,V>>();		
+		return new LinkedBinarySearchTree<Entry<K,V>>();
 	}	
 }
 

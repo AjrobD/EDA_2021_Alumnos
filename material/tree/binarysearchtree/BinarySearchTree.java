@@ -2,6 +2,8 @@ package material.tree.binarysearchtree;
 
 import material.Position;
 
+import java.util.Comparator;
+
 /**
  *
  * @author A. Duarte, J. Vélez
@@ -47,7 +49,7 @@ public interface BinarySearchTree<E> extends Iterable<Position<E>> {
      */
     /**Find range in binary search trees. */
     Iterable<Position<E>> findRange(E minValue, E maxValue) throws RuntimeException;
-
+    Iterable<Position<E>> findRangeComp(E minValue, E maxValue, Comparator<E> comparator) throws RuntimeException;
     /**
      * Ejercicio 2: first, last, successors, predecessors
      */

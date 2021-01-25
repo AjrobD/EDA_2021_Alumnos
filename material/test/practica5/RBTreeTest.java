@@ -47,86 +47,86 @@ public class RBTreeTest {
     @Test
     void predecessors1() {
         ArrayList<Position<Integer>> predecesores = (ArrayList<Position<Integer>>) tree.predecessors(pos[4]);
-        assertEquals(predecesores.get(0),pos[3]);
+        assertEquals(predecesores.get(0),pos[1]);
         assertEquals(predecesores.get(1),pos[2]);
-        assertEquals(predecesores.get(2),pos[1]);
+        assertEquals(predecesores.get(2),pos[3]);
 
     }
     @Test
     void predecessors2() {
         ArrayList<Position<Integer>> predecesores = (ArrayList<Position<Integer>>) tree.predecessors(pos[7]);
-        assertEquals(predecesores.get(0),pos[6]);
-        assertEquals(predecesores.get(1),pos[5]);
+        assertEquals(predecesores.get(0),pos[1]);
+        assertEquals(predecesores.get(1),pos[2]);
         assertEquals(predecesores.get(2),pos[3]);
-        assertEquals(predecesores.get(3),pos[2]);
-        assertEquals(predecesores.get(4),pos[1]);
-        assertEquals(predecesores.get(5),pos[4]);
+        assertEquals(predecesores.get(3),pos[4]);
+        assertEquals(predecesores.get(4),pos[5]);
+        assertEquals(predecesores.get(5),pos[6]);
 
     }
     @Test
     void predecessors3() {
         ArrayList<Position<Integer>> predecesores = (ArrayList<Position<Integer>>) tree.predecessors(pos[6]);
-        assertEquals(predecesores.get(0),pos[5]);
-        assertEquals(predecesores.get(1),pos[3]);
-        assertEquals(predecesores.get(2),pos[2]);
-        assertEquals(predecesores.get(3),pos[1]);
-        assertEquals(predecesores.get(4),pos[4]);
+        assertEquals(predecesores.get(0),pos[1]);
+        assertEquals(predecesores.get(1),pos[2]);
+        assertEquals(predecesores.get(2),pos[3]);
+        assertEquals(predecesores.get(3),pos[4]);
+        assertEquals(predecesores.get(4),pos[5]);
 
     }
     @Test
     void sucessors1() {
         ArrayList<Position<Integer>> sucesores = (ArrayList<Position<Integer>>) tree.successors(pos[4]);
         assertEquals(sucesores.get(0),pos[5]);
-        assertEquals(sucesores.get(1),pos[7]);
-        assertEquals(sucesores.get(2),pos[6]);
+        assertEquals(sucesores.get(1),pos[6]);
+        assertEquals(sucesores.get(2),pos[7]);
         assertEquals(sucesores.get(3),pos[8]);
     }
     @Test
     void sucessors2() {
         ArrayList<Position<Integer>> sucesores = (ArrayList<Position<Integer>>) tree.successors(pos[2]);
         assertEquals(sucesores.get(0),pos[3]);
-        assertEquals(sucesores.get(1),pos[5]);
-        assertEquals(sucesores.get(2),pos[4]);
-        assertEquals(sucesores.get(3),pos[7]);
-        assertEquals(sucesores.get(4),pos[6]);
+        assertEquals(sucesores.get(1),pos[4]);
+        assertEquals(sucesores.get(2),pos[5]);
+        assertEquals(sucesores.get(3),pos[6]);
+        assertEquals(sucesores.get(4),pos[7]);
         assertEquals(sucesores.get(5),pos[8]);
     }
     @Test
     void sucessors3() {
         ArrayList<Position<Integer>> sucesores = (ArrayList<Position<Integer>>) tree.successors(pos[3]);
-        assertEquals(sucesores.get(0),pos[5]);
-        assertEquals(sucesores.get(1),pos[4]);
-        assertEquals(sucesores.get(2),pos[7]);
-        assertEquals(sucesores.get(3),pos[6]);
+        assertEquals(sucesores.get(0),pos[4]);
+        assertEquals(sucesores.get(1),pos[5]);
+        assertEquals(sucesores.get(2),pos[6]);
+        assertEquals(sucesores.get(3),pos[7]);
         assertEquals(sucesores.get(4),pos[8]);
     }
     @Test
     void findRange1(){
         ArrayList<Position<Integer>> range = (ArrayList<Position<Integer>>) tree.findRange(2,6);
-        assertEquals(range.get(0),pos[3]);
-        assertEquals(range.get(1),pos[2]);
-        assertEquals(range.get(2),pos[5]);
-        assertEquals(range.get(3),pos[4]);
+        assertEquals(range.get(0),pos[2]);
+        assertEquals(range.get(1),pos[3]);
+        assertEquals(range.get(2),pos[4]);
+        assertEquals(range.get(3),pos[5]);
         assertEquals(range.get(4),pos[6]);
     }
     @Test
     void findRange2(){
         ArrayList<Position<Integer>> range = (ArrayList<Position<Integer>>) tree.findRange(3,10);
         assertEquals(range.get(0),pos[3]);
-        assertEquals(range.get(1),pos[5]);
-        assertEquals(range.get(2),pos[4]);
-        assertEquals(range.get(3),pos[7]);
-        assertEquals(range.get(4),pos[6]);
+        assertEquals(range.get(1),pos[4]);
+        assertEquals(range.get(2),pos[5]);
+        assertEquals(range.get(3),pos[6]);
+        assertEquals(range.get(4),pos[7]);
         assertEquals(range.get(5),pos[8]);
     }
     @Test
     void findRange3(){
         ArrayList<Position<Integer>> range = (ArrayList<Position<Integer>>) tree.findRange(-4,5);
-        assertEquals(range.get(0),pos[3]);
+        assertEquals(range.get(0),pos[1]);
         assertEquals(range.get(1),pos[2]);
-        assertEquals(range.get(2),pos[1]);
-        assertEquals(range.get(3),pos[5]);
-        assertEquals(range.get(4),pos[4]);
+        assertEquals(range.get(2),pos[3]);
+        assertEquals(range.get(3),pos[4]);
+        assertEquals(range.get(4),pos[5]);
     }
 
     @Test
@@ -142,13 +142,13 @@ public class RBTreeTest {
     @Test
     void findRange6(){
         ArrayList<Position<Integer>> range = (ArrayList<Position<Integer>>) tree.findRange(-4,15);
-        assertEquals(range.get(0),pos[3]);
+        assertEquals(range.get(0),pos[1]);
         assertEquals(range.get(1),pos[2]);
-        assertEquals(range.get(2),pos[1]);
-        assertEquals(range.get(3),pos[5]);
-        assertEquals(range.get(4),pos[4]);
-        assertEquals(range.get(5),pos[7]);
-        assertEquals(range.get(6),pos[6]);
+        assertEquals(range.get(2),pos[3]);
+        assertEquals(range.get(3),pos[4]);
+        assertEquals(range.get(4),pos[5]);
+        assertEquals(range.get(5),pos[6]);
+        assertEquals(range.get(6),pos[7]);
         assertEquals(range.get(7),pos[8]);
     }
 }

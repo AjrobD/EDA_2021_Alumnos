@@ -202,4 +202,20 @@ abstract public class AbstractTreeOrderedDict<K, V> implements
         return list;
     }
 
+    public Iterable<Entry<K, V>> findRangeComp(K minkey, K maxkey, Comparator<Entry<K,V>> comparator) {
+        List<Entry<K,V>> list = new ArrayList<>();
+        DictEntry<K,V> minEntry = new DictEntry<K,V>(minkey,null,null,keyComparator);
+        DictEntry<K,V> maxEntry = new DictEntry<K,V>(maxkey,null,null,keyComparator);
+        for(Position<Entry<K,V>> pos :this.bsTree.findRangeComp(minEntry,maxEntry,comparator)){
+            list.add(pos.getElement());
+        }
+        return list;
+    }
+
+    public Entry<K,V> first(){
+        return this.bsTree.first().getElement();
+    }
+    public Entry<K,V> last(){
+        return this.bsTree.last().getElement();
+    }
 }
