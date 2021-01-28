@@ -9,17 +9,21 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import material.Position;
 import material.ordereddictionary.*;
+import material.tree.Tree;
+import material.tree.binarysearchtree.BinarySearchTree;
+import material.tree.binarysearchtree.LinkedBinarySearchTree;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class TweetAnalysis {
 
-	AbstractTreeOrderedDict<Integer,Tweet> dict;
+	BinarySearchTree<TreeEntry> tree;
 
 	public TweetAnalysis(){
-		Comparator<Integer> comparator = new TweetValueComparator();
-		dict = new BSTOrderedDict<>(comparator);
+		Comparator<TreeEntry> comparator = new TweetValueComparator();
+		tree = new LinkedBinarySearchTree<TreeEntry>(comparator);
 	}
 	/**
 	 * Adds a new set of tweets to the tree from the given file
@@ -45,7 +49,8 @@ public class TweetAnalysis {
 			Integer retweets = t.getInt("retweet_count");
 			Integer favorite = t.getInt("favorite_count");
 			Tweet tweet = new Tweet(user,text,retweets,favorite);
-			dict.insert(retweets+favorite,tweet);
+			TreeEntry entry = new TreeEntry(retweets+favorite,tweet);
+			tree.insert(entry);
 		}
 	}
 	
@@ -53,10 +58,12 @@ public class TweetAnalysis {
 	 * Recovers all the tweets with score larger or equal than min and smaller or equal than max
 	 */
 	public Iterable<Tweet> findTweets(int min, int max) {
-		Iterable<Entry<Integer,Tweet>> range = dict.findRangeComp(min, max, new EntryComparator());
+		TreeEntry minEntry = new TreeEntry(min);
+		TreeEntry maxEntry = new TreeEntry(max);
+		Iterable<Position<TreeEntry>> range = tree.findRange(minEntry, maxEntry);
 		List<Tweet> list = new ArrayList<>();
-		for(Entry<Integer,Tweet> entry : range){
-			list.add(entry.getValue());
+		for(Position<TreeEntry> entry : range){
+			list.add(entry.getElement().getTweet());
 		}
 		return list;
 	}
@@ -65,13 +72,15 @@ public class TweetAnalysis {
 	 * Recovers all the tweets with score smaller or equal than percent*MAX_SCORE
 	 */
 	public Iterable<Tweet> worstTweets(double percent) {
-		Integer best = dict.last().getKey();
+		Integer best = tree.last().getElement().getPuntuacion();
 		Double maxD = best*percent;
 		Integer max = maxD.intValue();
-		Iterable<Entry<Integer,Tweet>> range = dict.findRangeComp(0, max, new EntryComparator());
+		TreeEntry minEntry = new TreeEntry(0);
+		TreeEntry maxEntry = new TreeEntry(max);
+		Iterable<Position<TreeEntry>> range = tree.findRange(minEntry, maxEntry);
 		List<Tweet> list = new ArrayList<>();
-		for(Entry<Integer,Tweet> entry : range){
-			list.add(entry.getValue());
+		for(Position<TreeEntry> entry : range){
+			list.add(entry.getElement().getTweet());
 		}
 		return list;
 	}
@@ -80,28 +89,17 @@ public class TweetAnalysis {
 	 * Recovers all the tweets with score larger or equal than percent*MAX_SCORE
 	 */
 	public Iterable<Tweet> bestTweets(double percent) {
-		Integer best = dict.last().getKey();
+		Integer best = tree.last().getElement().getPuntuacion();
 		Double minD = best*percent;
 		Integer min = minD.intValue();
-		Iterable<Entry<Integer,Tweet>> range = dict.findRangeComp(min, dict.last().getKey(), new EntryComparator());
+		TreeEntry minEntry = new TreeEntry(min);
+		TreeEntry maxEntry = new TreeEntry(best);
+		Iterable<Position<TreeEntry>> range = tree.findRange(minEntry, maxEntry);
 		List<Tweet> list = new ArrayList<>();
-		for(Entry<Integer,Tweet> entry : range){
-			list.add(entry.getValue());
+		for(Position<TreeEntry> entry : range){
+			list.add(entry.getElement().getTweet());
 		}
 		return list;
-	}
-
-	private class EntryComparator implements Comparator<Entry<Integer,Tweet>>{
-		@Override
-		public int compare(Entry<Integer,Tweet> o1, Entry<Integer,Tweet> o2) {
-			if(o1.getKey()<o2.getKey()){
-				return -1;
-			}
-			else if(o1.getKey()==o2.getKey()){
-				return 0;
-			}
-			return 1;
-		}
 	}
 
 }

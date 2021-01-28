@@ -356,33 +356,49 @@ public class RBTree<E> implements BinarySearchTree<E> {
 	public Position<E> last() throws RuntimeException {
 		return bst.last().getElement();
 	}
+
 	public Iterable<Position<E>> successors(Position<E> pos){
-		RBInfo<E> aux = checkPosition(pos);
-		Position<RBInfo<E>> position = aux.getTreePosition();
 		List<Position<E>> sucesores = new ArrayList<>();
-		if(this.bst.binTree.right(position).getElement()!=null){
-			addToListUnder(this.bst.binTree.right(position).getElement(),sucesores, false);
-		}
-		if(!this.bst.binTree.isRoot(position)) {
-			Position<E> parent = this.bst.binTree.parent(position).getElement();
-			addToListUppBigger(pos, sucesores, true);
-		}
+		recursiveSucesores(pos,sucesores,false);
 		return sucesores;
 	}
 
-	public Iterable<Position<E>> predecessors(Position<E> pos){
+	public void recursiveSucesores(Position<E> pos, List<Position<E>> list, boolean fromRight){
 		RBInfo<E> aux = checkPosition(pos);
 		Position<RBInfo<E>> position = aux.getTreePosition();
-		List<Position<E>> predecesores = new ArrayList<>();
-		if(this.bst.binTree.left(position).getElement()!=null){
-			addToListUnder( this.bst.binTree.left(position).getElement(),predecesores, true);
+		if (!fromRight) {
+			list.add(pos);
+			if (this.bst.binTree.right(position).getElement() != null) {
+				addToListUnder(this.bst.binTree.right(position).getElement(), list, false);
+			}
 		}
-		if(!this.bst.binTree.isRoot(position)) {
+		if (!this.bst.binTree.isRoot(position)) {
+			Position<RBInfo<E>> posParent = this.bst.binTree.parent(position);
 			Position<E> parent = this.bst.binTree.parent(position).getElement();
-			addToListUppLesser(pos, predecesores, true);
+			recursiveSucesores(parent, list, this.bst.binTree.right(posParent).equals(position));
 		}
-		Collections.reverse(predecesores);
-		return predecesores;
+	}
+
+	public Iterable<Position<E>> predecessors(Position<E> pos){
+		List<Position<E>> predecesor = new ArrayList<>();
+		recursivePredecesores(pos,predecesor,false);
+		return predecesor;
+	}
+
+	public void recursivePredecesores(Position<E> pos, List<Position<E>> list, boolean fromLeft){
+		RBInfo<E> aux = checkPosition(pos);
+		Position<RBInfo<E>> position = aux.getTreePosition();
+		if (!fromLeft) {
+			list.add(pos);
+			if (this.bst.binTree.left(position).getElement() != null) {
+				addToListUnder(this.bst.binTree.left(position).getElement(), list, true);
+			}
+		}
+		if (!this.bst.binTree.isRoot(position)) {
+			Position<RBInfo<E>> posParent = this.bst.binTree.parent(position);
+			Position<E> parent = this.bst.binTree.parent(position).getElement();
+			recursivePredecesores(parent, list, this.bst.binTree.left(posParent).equals(position));
+		}
 	}
 
 	public void addToListUnder(Position<E> pos, List<Position<E>> list, Boolean lesser){
@@ -408,38 +424,6 @@ public class RBTree<E> implements BinarySearchTree<E> {
 		}
 	}
 
-	public void addToListUppLesser(Position<E> pos, List<Position<E>> list, Boolean fromLeft){
-		RBInfo<E> aux = checkPosition(pos);
-		Position<RBInfo<E>> position = aux.getTreePosition();
-		if(this.bst.binTree.left(position).getElement()!=null&&!fromLeft){
-			addToListUnder( this.bst.binTree.left(position).getElement(),list,true);
-		}
-		if(!this.bst.binTree.isRoot(position)) { //si es root no puedo mirar el parent
-			Position<RBInfo<E>> parent = this.bst.binTree.parent(position);
-			if (this.bst.binTree.left(parent).equals(position)) { //si es hijo izquierdo
-				addToListUppLesser(parent.getElement(), list, true);
-			} else {//si no es hijo izquierdo
-				list.add(parent.getElement());
-				addToListUppLesser(parent.getElement(), list, false);
-			}
-		}
-	}
-	public void addToListUppBigger(Position<E> pos, List<Position<E>> list, Boolean fromRight){
-		RBInfo<E> aux = checkPosition(pos);
-		Position<RBInfo<E>> position = aux.getTreePosition();
-		if(this.bst.binTree.right(position).getElement()!=null&&!fromRight){
-			addToListUnder( this.bst.binTree.right(position).getElement(),list,false);
-		}
-		if(!this.bst.binTree.isRoot(position)) { //si es root no puedo mirar el parent
-			Position<RBInfo<E>> parent = this.bst.binTree.parent(position);
-			if (this.bst.binTree.right(parent).equals(position)) { //si es hijo derecho
-				addToListUppBigger(parent.getElement(), list, true);
-			} else {//si no es hijo derecho
-				list.add(parent.getElement());
-				addToListUppBigger(parent.getElement(), list, false);
-			}
-		}
-	}
 
 	/**
 	 * metodo findRange para cuando el arbol ha sido creado sin el comparador
@@ -465,5 +449,72 @@ public class RBTree<E> implements BinarySearchTree<E> {
 			addToRangeComp(range,this.bst.binTree.right(checkPosition(pos).getTreePosition()).getElement(),minValue,maxValue,comparator);
 		}
 	}
+
+	/* Codigo antiguo: NO CORREGIR
+	public Iterable<Position<E>> successors(Position<E> pos){
+		RBInfo<E> aux = checkPosition(pos);
+		Position<RBInfo<E>> position = aux.getTreePosition();
+		List<Position<E>> sucesores = new ArrayList<>();
+		if(this.bst.binTree.right(position).getElement()!=null){
+			addToListUnder(this.bst.binTree.right(position).getElement(),sucesores, false);
+		}
+		if(!this.bst.binTree.isRoot(position)) {
+			Position<E> parent = this.bst.binTree.parent(position).getElement();
+			addToListUppBigger(pos, sucesores, true);
+		}
+		return sucesores;
+	}
+
+	public void addToListUppBigger(Position<E> pos, List<Position<E>> list, Boolean fromRight){
+		RBInfo<E> aux = checkPosition(pos);
+		Position<RBInfo<E>> position = aux.getTreePosition();
+		if(this.bst.binTree.right(position).getElement()!=null&&!fromRight){
+			addToListUnder( this.bst.binTree.right(position).getElement(),list,false);
+		}
+		if(!this.bst.binTree.isRoot(position)) { //si es root no puedo mirar el parent
+			Position<RBInfo<E>> parent = this.bst.binTree.parent(position);
+			if (this.bst.binTree.right(parent).equals(position)) { //si es hijo derecho
+				addToListUppBigger(parent.getElement(), list, true);
+			} else {//si no es hijo derecho
+				list.add(parent.getElement());
+				addToListUppBigger(parent.getElement(), list, false);
+			}
+		}
+	}
+
+	public Iterable<Position<E>> predecessors(Position<E> pos){
+		RBInfo<E> aux = checkPosition(pos);
+		Position<RBInfo<E>> position = aux.getTreePosition();
+		List<Position<E>> predecesores = new ArrayList<>();
+		if(this.bst.binTree.left(position).getElement()!=null){
+			addToListUnder( this.bst.binTree.left(position).getElement(),predecesores, true);
+		}
+		if(!this.bst.binTree.isRoot(position)) {
+			Position<E> parent = this.bst.binTree.parent(position).getElement();
+			addToListUppLesser(pos, predecesores, true);
+		}
+		Collections.reverse(predecesores);
+		return predecesores;
+	}
+
+	public void addToListUppLesser(Position<E> pos, List<Position<E>> list, Boolean fromLeft){
+		RBInfo<E> aux = checkPosition(pos);
+		Position<RBInfo<E>> position = aux.getTreePosition();
+		if(this.bst.binTree.left(position).getElement()!=null&&!fromLeft){
+			addToListUnder( this.bst.binTree.left(position).getElement(),list,true);
+		}
+		if(!this.bst.binTree.isRoot(position)) { //si es root no puedo mirar el parent
+			Position<RBInfo<E>> parent = this.bst.binTree.parent(position);
+			if (this.bst.binTree.left(parent).equals(position)) { //si es hijo izquierdo
+				addToListUppLesser(parent.getElement(), list, true);
+			} else {//si no es hijo izquierdo
+				list.add(parent.getElement());
+				addToListUppLesser(parent.getElement(), list, false);
+			}
+		}
+	}
+
+
+	 */
 
 }

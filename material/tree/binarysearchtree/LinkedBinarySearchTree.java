@@ -292,29 +292,44 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
 		return aux;
 
 	}
+
 	public Iterable<Position<E>> successors(Position<E> pos){
 		List<Position<E>> sucesores = new ArrayList<>();
-		if(this.binTree.right(pos).getElement()!=null){
-			addToListUnder(this.binTree.right(pos),sucesores,false);
-		}
-		if(!this.binTree.isRoot(pos)) {
-			Position<E> parent = this.binTree.parent(pos);
-			addToListUppBigger(pos, sucesores, true);
-		}
+		recursiveSucesores(pos,sucesores,false);
 		return sucesores;
+	}
+
+	public void recursiveSucesores(Position<E> pos, List<Position<E>> list, boolean fromRight){
+		if (!fromRight) {
+			list.add(pos);
+			if (this.binTree.right(pos).getElement() != null) {
+				addToListUnder(this.binTree.right(pos), list, false);
+			}
+		}
+		if (!this.binTree.isRoot(pos)) {
+			Position<E> parent = this.binTree.parent(pos);
+			recursiveSucesores(parent, list, this.binTree.right(parent).equals(pos));
+		}
 	}
 
 	public Iterable<Position<E>> predecessors(Position<E> pos){
 		List<Position<E>> predecesores = new ArrayList<>();
-		if(this.binTree.left(pos).getElement()!=null){
-			addToListUnder(this.binTree.left(pos),predecesores,true);
-		}
-		if(!this.binTree.isRoot(pos)) {
-			Position<E> parent = this.binTree.parent(pos);
-			addToListUppLesser(pos, predecesores, true);
-		}
-		Collections.reverse(predecesores);
+		recursivePredecesor(pos,predecesores,false);
 		return predecesores;
+	}
+
+	private void recursivePredecesor(Position<E> pos, List<Position<E>> list, boolean fromLeft) {
+		if(!fromLeft){
+			list.add(pos);
+			if(this.binTree.left(pos).getElement()!=null){
+				addToListUnder(this.binTree.left(pos),list,true);
+			}
+		}
+		if(!this.binTree.isRoot(pos)){
+			Position<E> parent = this.binTree.parent(pos);
+			recursivePredecesor(parent, list, this.binTree.left(parent).equals(pos));
+		}
+
 	}
 
 	public void addToListUnder(Position<E> pos, List<Position<E>> list, Boolean lesser){//lesser nos dice si tenemos que computar primero el mayor o el menor
@@ -338,36 +353,7 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
 		}
 	}
 
-	public void addToListUppLesser(Position<E> pos, List<Position<E>> list, Boolean fromLeft){
-		if(this.binTree.left(pos).getElement()!=null&&!fromLeft){
-			addToListUnder(this.binTree.left(pos),list, true);
-		}
-		if(!this.binTree.isRoot(pos)) {//si es root no puedo mirar el parent
-			Position<E> parent = this.binTree.parent(pos);
-			if(this.binTree.left(parent).equals(pos)) {//si es hijo izquierdo
-				addToListUppLesser(parent,list,true);
-			}
-			else{//si no es hijo izquierdo
-				list.add(parent);
-				addToListUppLesser(parent,list,false);
-			}
-		}
-	}
-	public void addToListUppBigger(Position<E> pos, List<Position<E>> list, Boolean fromRight){
-		if(this.binTree.right(pos).getElement()!=null&&!fromRight){
-			addToListUnder(this.binTree.right(pos),list,false);
-		}
-		if(!this.binTree.isRoot(pos)) {//si es root no puedo mirar el parent
-			Position<E> parent = this.binTree.parent(pos);
-			if(this.binTree.right(parent).equals(pos)) {//si es hijo derecho
-				addToListUppBigger(parent,list,true);
-			}
-			else{//si no es hijo derecho
-				list.add(parent);
-				addToListUppBigger(parent,list,false);
-			}
-		}
-	}
+
     /*
      * Ejercicio 2: findRange
      */
@@ -393,30 +379,53 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
 		}
 	}
 
-	/**
-	 * metodo findRange para cuando el arbol ha sido creado sin el comparador
+		/* Codigo antiguo: NO CORREGIR
+
+		public Iterable<Position<E>> successors(Position<E> pos){
+			List<Position<E>> sucesores = new ArrayList<>();
+			if(this.binTree.right(pos).getElement()!=null){
+				addToListUnder(this.binTree.right(pos),sucesores,false);
+			}
+			if(!this.binTree.isRoot(pos)) {
+				Position<E> parent = this.binTree.parent(pos);
+				addToListUppBigger(pos, sucesores, true);
+			}
+			return sucesores;
+		}
+
+		public void addToListUppBigger(Position<E> pos, List<Position<E>> list, boolean fromRight){
+		if(this.binTree.right(pos).getElement()!=null&&!fromRight){
+			addToListUnder(this.binTree.right(pos),list,false);
+		}
+		if(!this.binTree.isRoot(pos)) {//si es root no puedo mirar el parent
+			Position<E> parent = this.binTree.parent(pos);
+			if(this.binTree.right(parent).equals(pos)) {//si es hijo derecho
+				addToListUppBigger(parent,list,true);
+			}
+			else{//si no es hijo derecho
+				list.add(parent);
+				addToListUppBigger(parent,list,false);
+			}
+		}
+	}
+
+		public void addToListUppLesser(Position<E> pos, List<Position<E>> list, Boolean fromLeft){
+		if(this.binTree.left(pos).getElement()!=null&&!fromLeft){
+			addToListUnder(this.binTree.left(pos),list, true);
+		}
+		if(!this.binTree.isRoot(pos)) {//si es root no puedo mirar el parent
+			Position<E> parent = this.binTree.parent(pos);
+			if(this.binTree.left(parent).equals(pos)) {//si es hijo izquierdo
+				addToListUppLesser(parent,list,true);
+			}
+			else{//si no es hijo izquierdo
+				list.add(parent);
+				addToListUppLesser(parent,list,false);
+			}
+		}
+	}
 	 */
 
-	public Iterable<Position<E>>  findRangeComp(E minValue, E maxValue, Comparator<E> comparator) throws RuntimeException{
-		if(comparator.compare(minValue, maxValue)>0){
-			throw new RuntimeException("Invalid range. (min>max)");
-		}
-		List<Position<E>> range = new ArrayList<>();
-		addToRangeComp(range,this.binTree.root(),minValue,maxValue, comparator);
-		return range;
-	}
-
-	private void addToRangeComp(List<Position<E>> range, Position<E> pos, E minValue, E maxValue, Comparator<E> comparator){
-		if(comparator.compare(pos.getElement(),minValue)>=0&&this.binTree.left(pos).getElement()!=null){
-			addToRangeComp(range,this.binTree.left(pos),minValue,maxValue,comparator);
-		}
-		if(comparator.compare(pos.getElement(),minValue)>=0&&comparator.compare(pos.getElement(),maxValue)<=0){
-			range.add(pos);
-		}
-		if(comparator.compare(pos.getElement(),maxValue)<=0&&this.binTree.right(pos).getElement()!=null){
-			addToRangeComp(range,this.binTree.right(pos),minValue,maxValue,comparator);
-		}
-	}
 }
 
 

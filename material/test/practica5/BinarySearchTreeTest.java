@@ -19,9 +19,9 @@ class BinarySearchTreeTest {
 
     public BinarySearchTree<Integer> newBST(){
         //TODO: Aqui se define la implementacion a comprobar
-//        return new LinkedBinarySearchTree<>();//
-//        return new AVLTree<>();
-          return new RBTree<>();
+        return new LinkedBinarySearchTree<>();//
+        //return new AVLTree<>();
+        //return new RBTree<>();
     }
 
 

@@ -306,33 +306,49 @@ public class AVLTree<E> implements BinarySearchTree<E> {
     public Position<E> last() throws RuntimeException {
         return bst.last().getElement();
     }
+
     public Iterable<Position<E>> successors(Position<E> pos){
-        AVLInfo<E> aux = checkPosition(pos);
-        Position<AVLInfo<E>> position = aux.getTreePosition();
         List<Position<E>> sucesores = new ArrayList<>();
-        if(this.bst.binTree.right(position).getElement()!=null){
-            addToListUnder(this.bst.binTree.right(position).getElement(),sucesores,false);
-        }
-        if(!this.bst.binTree.isRoot(position)) {
-            Position<E> parent = this.bst.binTree.parent(position).getElement();
-            addToListUppBigger(pos, sucesores, true);
-        }
+        recursiveSucesores(pos,sucesores,false);
         return sucesores;
     }
 
-    public Iterable<Position<E>> predecessors(Position<E> pos){
+    public void recursiveSucesores(Position<E> pos, List<Position<E>> list, boolean fromRight){
         AVLInfo<E> aux = checkPosition(pos);
         Position<AVLInfo<E>> position = aux.getTreePosition();
-        List<Position<E>> predecesores = new ArrayList<>();
-        if(this.bst.binTree.left(position).getElement()!=null){
-            addToListUnder( this.bst.binTree.left(position).getElement(),predecesores,true);
+        if (!fromRight) {
+            list.add(pos);
+            if (this.bst.binTree.right(position).getElement() != null) {
+                addToListUnder(this.bst.binTree.right(position).getElement(), list, false);
+            }
         }
-        if(!this.bst.binTree.isRoot(position)) {
+        if (!this.bst.binTree.isRoot(position)) {
+            Position<AVLInfo<E>> posParent = this.bst.binTree.parent(position);
             Position<E> parent = this.bst.binTree.parent(position).getElement();
-            addToListUppLesser(pos, predecesores, true);
+            recursiveSucesores(parent, list, this.bst.binTree.right(posParent).equals(position));
         }
-        Collections.reverse(predecesores);
-        return predecesores;
+    }
+
+    public Iterable<Position<E>> predecessors(Position<E> pos){
+        List<Position<E>> predecesor = new ArrayList<>();
+        recursivePredecesores(pos,predecesor,false);
+        return predecesor;
+    }
+
+    public void recursivePredecesores(Position<E> pos, List<Position<E>> list, boolean fromLeft){
+        AVLInfo<E> aux = checkPosition(pos);
+        Position<AVLInfo<E>> position = aux.getTreePosition();
+        if (!fromLeft) {
+            list.add(pos);
+            if (this.bst.binTree.left(position).getElement() != null) {
+                addToListUnder(this.bst.binTree.left(position).getElement(), list, true);
+            }
+        }
+        if (!this.bst.binTree.isRoot(position)) {
+            Position<AVLInfo<E>> posParent = this.bst.binTree.parent(position);
+            Position<E> parent = this.bst.binTree.parent(position).getElement();
+            recursivePredecesores(parent, list, this.bst.binTree.left(posParent).equals(position));
+        }
     }
 
     public void addToListUnder(Position<E> pos, List<Position<E>> list, Boolean lesser){
@@ -358,22 +374,21 @@ public class AVLTree<E> implements BinarySearchTree<E> {
         }
     }
 
-    public void addToListUppLesser(Position<E> pos, List<Position<E>> list, Boolean fromLeft){
+    /*Codigo antiguo: NO CORREGIR
+    public Iterable<Position<E>> successors(Position<E> pos){
         AVLInfo<E> aux = checkPosition(pos);
         Position<AVLInfo<E>> position = aux.getTreePosition();
-        if(this.bst.binTree.left(position).getElement()!=null&&!fromLeft){
-            addToListUnder( this.bst.binTree.left(position).getElement(),list,true);
+        List<Position<E>> sucesores = new ArrayList<>();
+        if(this.bst.binTree.right(position).getElement()!=null){
+            addToListUnder(this.bst.binTree.right(position).getElement(),sucesores,false);
         }
-        if(!this.bst.binTree.isRoot(position)) { //si es root no puedo mirar el parent
-            Position<AVLInfo<E>> parent = this.bst.binTree.parent(position);
-            if (this.bst.binTree.left(parent).equals(position)) { //si es hijo izquierdo
-                addToListUppLesser(parent.getElement(), list, true);
-            } else {//si no es hijo izquierdo
-                list.add(parent.getElement());
-                addToListUppLesser(parent.getElement(), list, false);
-            }
+        if(!this.bst.binTree.isRoot(position)) {
+            Position<E> parent = this.bst.binTree.parent(position).getElement();
+            addToListUppBigger(pos, sucesores, true);
         }
+        return sucesores;
     }
+
     public void addToListUppBigger(Position<E> pos, List<Position<E>> list, Boolean fromRight){
         AVLInfo<E> aux = checkPosition(pos);
         Position<AVLInfo<E>> position = aux.getTreePosition();
@@ -391,29 +406,37 @@ public class AVLTree<E> implements BinarySearchTree<E> {
         }
     }
 
-    /**
-     * metodo findRange para cuando el arbol ha sido creado sin el comparador
+    public Iterable<Position<E>> predecessors(Position<E> pos){
+        AVLInfo<E> aux = checkPosition(pos);
+        Position<AVLInfo<E>> position = aux.getTreePosition();
+        List<Position<E>> predecesores = new ArrayList<>();
+        if(this.bst.binTree.left(position).getElement()!=null){
+            addToListUnder( this.bst.binTree.left(position).getElement(),predecesores,true);
+        }
+        if(!this.bst.binTree.isRoot(position)) {
+            Position<E> parent = this.bst.binTree.parent(position).getElement();
+            addToListUppLesser(pos, predecesores, true);
+        }
+        Collections.reverse(predecesores);
+        return predecesores;
+    }
+
+    public void addToListUppLesser(Position<E> pos, List<Position<E>> list, Boolean fromLeft){
+        AVLInfo<E> aux = checkPosition(pos);
+        Position<AVLInfo<E>> position = aux.getTreePosition();
+        if(this.bst.binTree.left(position).getElement()!=null&&!fromLeft){
+            addToListUnder( this.bst.binTree.left(position).getElement(),list,true);
+        }
+        if(!this.bst.binTree.isRoot(position)) { //si es root no puedo mirar el parent
+            Position<AVLInfo<E>> parent = this.bst.binTree.parent(position);
+            if (this.bst.binTree.left(parent).equals(position)) { //si es hijo izquierdo
+                addToListUppLesser(parent.getElement(), list, true);
+            } else {//si no es hijo izquierdo
+                list.add(parent.getElement());
+                addToListUppLesser(parent.getElement(), list, false);
+            }
+        }
+    }
+
      */
-
-
-    public Iterable<Position<E>> findRangeComp(E minValue, E maxValue, Comparator<E> comparator) throws RuntimeException{
-        if(comparator.compare(minValue, maxValue)>0){
-            throw new RuntimeException("Invalid range. (min>max)");
-        }
-        List<Position<E>> range = new ArrayList<>();
-        addToRangeComp(range,this.bst.binTree.root().getElement(),minValue,maxValue,comparator);
-        return range;
-    }
-
-    private void addToRangeComp(List<Position<E>> range, Position<E> pos, E minValue, E maxValue, Comparator<E> comparator){
-        if(comparator.compare(pos.getElement(), minValue)>=0&&this.bst.binTree.left(checkPosition(pos).getTreePosition()).getElement()!=null){
-            addToRangeComp(range,this.bst.binTree.left(checkPosition(pos).getTreePosition()).getElement(),minValue,maxValue,comparator);
-        }
-        if(comparator.compare(pos.getElement(),minValue)>=0&&comparator.compare(pos.getElement(), maxValue)<=0){
-            range.add(pos);
-        }
-        if(comparator.compare(pos.getElement(),maxValue)<=0&&this.bst.binTree.right(checkPosition(pos).getTreePosition()).getElement()!=null){
-            addToRangeComp(range,this.bst.binTree.right(checkPosition(pos).getTreePosition()).getElement(),minValue,maxValue,comparator);
-        }
-    }
 }

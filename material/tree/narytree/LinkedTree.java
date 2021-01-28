@@ -1,6 +1,7 @@
 package material.tree.narytree;
 
 import material.Position;
+import material.tree.Tree;
 import material.tree.iterators.BFSIterator;
 
 import java.util.ArrayList;
@@ -292,6 +293,82 @@ public class LinkedTree<E> implements NAryTree<E> {
     }
 
 
+    /**
+     * Examen Ene2014
+     */
+    public boolean equalTree(LinkedTree t){
+        if(this.size!=t.size()){
+            return false;
+        }
+        else{
+            TreeNode<E> r1 = checkPosition(this.root);
+            TreeNode<E> r2 = checkPosition(t.root());
+            return recursiveEqual(r1,r2);
+        }
+    }
+
+    public boolean recursiveEqual(TreeNode<E> n1, TreeNode<E> n2){
+        if(n1.equals(n2)){
+            List<TreeNode<E>> c1 = n1.children;
+            List<TreeNode<E>> c2 = n2.children;
+            if(c1.containsAll(c2)&&c2.containsAll(c1)){
+                for(TreeNode<E> children1 : c1){
+                    TreeNode<E> children2 = c2.get(c2.indexOf(children1));
+                    if(!recursiveEqual(children1,children2)){
+                        return false;
+                    }
+                }
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+        return true;
+    }
+
+    public LinkedTree<E> subTree(Position<E> pos){
+        TreeNode<E>  root = checkPosition(pos);
+        LinkedTree<E> tree = new LinkedTree<E>();
+        Position<E> position = tree.addRoot(root.getElement());
+        auxSubTree(root,  position,  tree);
+        return tree;
+    }
+
+    public void auxSubTree(TreeNode<E> node, Position<E> position, LinkedTree<E> tree){
+        List<TreeNode<E>> children = node.getChildren();
+        for(TreeNode<E> child : children){
+            Position<E> childPos = tree.add(child.getElement(),position);
+            auxSubTree(child,childPos,tree);
+        }
+    }
+
+    /**
+     * Examen Dic2014
+     */
+
+    public static <E> void clear(NAryTree<E> tree){
+        if(tree!=null){
+            tree.remove(tree.root());
+        }
+    }
+
+    public static <E> void copy(NAryTree<E> treeIn, NAryTree<E> treeOut){
+        if(treeIn!=null){
+            Position<E> pos = treeOut.addRoot(treeIn.root().getElement());
+            copyAux(treeIn,treeIn.root(),treeOut,pos);
+        }
+
+    }
+
+    public static <E> void copyAux(NAryTree<E> treeIn, Position<E> posIn, NAryTree<E> treeOut, Position<E> posOut){
+        for(Position<E> childIn: treeIn.children(posIn)){
+            Position<E> childOut = treeOut.add(childIn.getElement(), posOut);
+            copyAux(treeIn,childIn,treeOut,childOut);
+        }
+    }
 
 }
 
