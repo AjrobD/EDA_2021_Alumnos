@@ -19,6 +19,52 @@ import org.json.JSONObject;
 
 public class TweetAnalysis {
 
+	protected class TreeEntry{
+		private int puntuacion;
+		private Tweet tweet;
+
+		private TreeEntry(int puntuacion, Tweet tweet) {
+			this.puntuacion = puntuacion;
+			this.tweet = tweet;
+		}
+
+		public TreeEntry(int puntuacion) {
+			this.puntuacion = puntuacion;
+		}
+
+		public int getPuntuacion() {
+			return puntuacion;
+		}
+
+		public void setPuntuacion(int puntuacion) {
+			this.puntuacion = puntuacion;
+		}
+
+		public Tweet getTweet() {
+			return tweet;
+		}
+
+		public void setTweet(Tweet tweet) {
+			this.tweet = tweet;
+		}
+	}
+
+	protected class TweetValueComparator implements Comparator<TreeEntry> {
+
+		TweetValueComparator(){super();};
+
+		@Override
+		public int compare(TreeEntry o1, TreeEntry o2) {
+			if(o1.getPuntuacion()<o2.getPuntuacion()){
+				return -1;
+			}
+			else if(o1.getPuntuacion()==o2.getPuntuacion()){
+				return 0;
+			}
+			return 1;
+		}
+	}
+
 	BinarySearchTree<TreeEntry> tree;
 
 	public TweetAnalysis(){
