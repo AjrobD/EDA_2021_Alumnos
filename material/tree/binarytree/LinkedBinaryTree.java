@@ -1,12 +1,10 @@
 package material.tree.binarytree;
 
 import material.Position;
+import material.tree.iterators.BFSIterator;
 import material.tree.iterators.InorderBinaryTreeIterator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @param <E>
@@ -460,6 +458,76 @@ public class LinkedBinaryTree<E> implements BinaryTree<E> {
         return (BTNode<E>) p;
     }
 
+    /**
+    * Examen Ene2016
+    */
+    public class  InternalNodeIterator<E> implements Iterator<Position<E>>{
+        private Queue<Position<E>> nodes;
+        public BinaryTree<E> tree;
+
+
+        public InternalNodeIterator(BinaryTree<E> tree){
+            this.tree=tree;
+            if(this.tree.isInternal(tree.root())) {
+                nodes.add(tree.root());
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return nodes.isEmpty();
+        }
+
+        @Override
+        public Position<E> next() {
+            Position<E> pos = nodes.remove();
+            for(Position<E> child : tree.children(pos)){
+                if(tree.isInternal(child)){
+                    nodes.add(child);
+                }
+            }
+            return pos;
+        }
+
+        @Override
+        public void remove() throws RuntimeException{
+            throw new RuntimeException("not implemented");
+        }
+    }
+
+    public boolean isPerfect(){
+        if (!this.isEmpty()) {
+            InternalNodeIterator<E> it = new InternalNodeIterator<>(this);
+            while(it.hasNext()){
+                Position<E> pos = it.next();
+                if(this.isInternal(pos) && (!this.hasLeft(pos) || this.hasRight(pos))){
+                    return false;
+                }
+            }
+        }
+        else{
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isOdd(){
+        int des = this.size()-1;//se resta el root
+        if(this.isEmpty()||this.isLeaf(this.root())){
+            return true;
+        }
+        else{
+            int cont = 0;
+            if(this.hasLeft(root())) {
+                BFSIterator<E> it = new BFSIterator<>(this, this.left(root));
+                while(it.hasNext()){
+                    it.next();
+                    cont++;
+                }
+            }
+            return des/2<cont;
+        }
+    }
 
 
 }
