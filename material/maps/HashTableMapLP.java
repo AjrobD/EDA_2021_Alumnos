@@ -24,7 +24,7 @@ public class HashTableMapLP<K, V> extends AbstractHashTableMap<K, V> {
 
     @Override
     protected int offset(K key, int i) {
-        return 1;
+        return i;
     }
 
 }

@@ -1,7 +1,6 @@
 package material.test.practica4;
 
-import material.maps.Entry;
-import material.maps.HashTableMapSC;
+import material.maps.*;
 import material.maps.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

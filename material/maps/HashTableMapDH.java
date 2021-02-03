@@ -24,6 +24,6 @@ public class HashTableMapDH<K, V> extends AbstractHashTableMap<K, V> {
         while(q>capacity&&q>1){
             q=q-2;
         }
-        return (q-(hashValue(key)%q))*i;
+        return (q-(key.hashCode()%q))*i;
     }
 }
