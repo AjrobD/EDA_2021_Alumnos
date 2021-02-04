@@ -1,20 +1,24 @@
 package material.exam_excercises.Ene2020;
 
+import material.Position;
 import material.maps.AbstractHashTableMap;
 import material.maps.HashTableMapDH;
 import material.ordereddictionary.AVLOrderedDict;
 import material.ordereddictionary.OrderedDictionary;
+import material.tree.binarysearchtree.AVLTree;
+import material.tree.binarysearchtree.BinarySearchTree;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class LaResistencia {
     public AbstractHashTableMap<String, List<Visita>> meses;
-    public OrderedDictionary<Integer,Visita> dinero;
+    public BinarySearchTree<Visita> dineroTree;
 
     public LaResistencia(){
         meses = new HashTableMapDH<>();
-        dinero = new AVLOrderedDict<>();
+        dineroTree = new AVLTree<>();
     }
 
     public void addVisit(String nombre, String mes, Integer din){
@@ -28,7 +32,7 @@ public class LaResistencia {
             visitas.add(visita);
             meses.put(mes,visitas);
         }
-        dinero.insert(din,visita);
+        dineroTree.insert(visita);
     }
 
     public Integer moneyInMonth(String mes){
@@ -43,6 +47,24 @@ public class LaResistencia {
         List<String> famosos = new ArrayList<>();
         for(Visita visita : meses.get(mes)){
             famosos.add(visita.getNombre());
+        }
+        return famosos;
+    }
+
+    public Iterable<String> overMedian(){
+        List<String> famosos = new ArrayList<>();
+        Iterator<Position<Visita>> it = dineroTree.iterator();
+        Integer i = 0;
+        Integer mediana = dineroTree.size() /2;
+        if(dineroTree.size()%2==1){
+            mediana++;
+        }
+        while(it.hasNext()){
+            Position<Visita> visitaPosition = it.next();
+            if(i>=mediana){
+                famosos.add(visitaPosition.getElement().nombre);
+            }
+            i++;
         }
         return famosos;
     }

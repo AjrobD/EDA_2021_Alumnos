@@ -1,6 +1,8 @@
 package material.exam_excercises.Ene2020;
 
-public class Visita {
+import java.util.Objects;
+
+public class Visita implements Comparable{
     public String nombre;
     public String mes;
     public int dinero;
@@ -33,5 +35,34 @@ public class Visita {
         this.nombre = nombre;
         this.mes = mes;
         this.dinero = dinero;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Visita visita = (Visita) o;
+        return dinero == visita.dinero &&
+                nombre.equals(visita.nombre) &&
+                mes.equals(visita.mes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nombre, mes, dinero);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Visita visita = (Visita) o;
+        if(dinero< visita.getDinero()){
+            return -1;
+        }
+        else if(dinero== visita.getDinero()){
+            return 0;
+        }
+        else{
+            return 1;
+        }
     }
 }
