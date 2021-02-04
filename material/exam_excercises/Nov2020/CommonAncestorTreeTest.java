@@ -1,11 +1,10 @@
-package material.exam_excercises.Oct2020;
+package material.exam_excercises.Nov2020;
 
 import material.Position;
 import material.tree.narytree.LinkedTree;
 import material.tree.narytree.NAryTree;
 import org.junit.jupiter.api.BeforeEach;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CommonAncestorTreeTest {

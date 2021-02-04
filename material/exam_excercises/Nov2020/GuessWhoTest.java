@@ -1,9 +1,8 @@
-package material.exam_excercises.Oct2020;
+package material.exam_excercises.Nov2020;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GuessWhoTest {
@@ -13,7 +12,7 @@ class GuessWhoTest {
     @BeforeEach
     void setUp() {
         game = new GuessWho();
-        game.loadGame("files/marvel.txt");
+        game.loadGame("C:/Users/Usuario/Desktop/URJC/Primer Cuatrimestre/EDA/EDA_2021_Alumnos/material/exam_excercises/Nov2020/files/marvel.txt");
     }
 
     @Test
@@ -58,19 +57,19 @@ class GuessWhoTest {
 
     @Test
     void solve1() {
-        String result = game.solve("files/spiderman.txt");
+        String result = game.solve("C:/Users/Usuario/Desktop/URJC/Primer Cuatrimestre/EDA/EDA_2021_Alumnos/material/exam_excercises/Nov2020/files/spiderman.txt");
         assertEquals("Spiderman", result);
     }
 
     @Test
     void solve2() {
-        String result = game.solve("files/incorrecto.txt");
+        String result = game.solve("C:/Users/Usuario/Desktop/URJC/Primer Cuatrimestre/EDA/EDA_2021_Alumnos/material/exam_excercises/Nov2020/files/incorrecto.txt");
         assertEquals("INCORRECTO", result);
     }
 
     @Test
     void solve3() {
-        String result = game.solve("files/hulka.txt");
+        String result = game.solve("C:/Users/Usuario/Desktop/URJC/Primer Cuatrimestre/EDA/EDA_2021_Alumnos/material/exam_excercises/Nov2020/files/hulka.txt");
         assertEquals("Hulka", result);
     }
 
