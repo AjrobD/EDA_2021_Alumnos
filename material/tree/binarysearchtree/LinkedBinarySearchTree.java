@@ -315,6 +315,7 @@ public class LinkedBinarySearchTree<E> implements BinarySearchTree<E> {
 	public Iterable<Position<E>> predecessors(Position<E> pos){
 		List<Position<E>> predecesores = new ArrayList<>();
 		recursivePredecesor(pos,predecesores,false);
+		//Collections.reverse(predecesores); para devolverlo en orden ascendente
 		return predecesores;
 	}
 
